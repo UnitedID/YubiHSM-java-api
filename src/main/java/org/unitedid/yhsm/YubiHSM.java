@@ -20,12 +20,58 @@ package org.unitedid.yhsm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.unitedid.yhsm.internal.DeviceHandlerFactory;
+import org.unitedid.yhsm.internal.*;
+
+import java.util.Map;
 
 public class YubiHSM  {
     /** Logger */
     private final Logger log = LoggerFactory.getLogger(YubiHSM.class);
 
+    private DeviceHandler deviceHandler;
 
+    public YubiHSM(String device, int timeout) {
+        deviceHandler = DeviceHandlerFactory.get(device, timeout);
+        CommandHandler.reset(deviceHandler);
+    }
 
+    public String echo(String str) {
+        return EchoCmd.execute(deviceHandler, str);
+    }
+
+    public Map<String, String> info() {
+        return SystemInfoCmd.execute(deviceHandler);
+    }
+
+    public String infoToString() {
+        Map<String, String> info = SystemInfoCmd.execute(deviceHandler);
+
+        return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
+                                                                           info.get("build"), info.get("protocol"),
+                                                                           info.get("sysid"));
+    }
+
+    public Map<String, String> generateAEAD(String nonce, int keyHandle, String data) {
+        return AEADCmd.generateAEAD(deviceHandler, nonce, keyHandle, data);
+    }
+
+    public Map<String, String> generateRandomAEAD(String nonce, int keyHandle, int length) {
+        return AEADCmd.generateRandomAEAD(deviceHandler, nonce, keyHandle, length);
+    }
+
+    public Map<String, String> generateBufferAEAD(String nonce, int keyHandle) {
+        return AEADCmd.generateBufferAEAD(deviceHandler, nonce, keyHandle);
+    }
+
+    public boolean validateAEAD(String nonce, int keyHandle, String aead, String plaintext) {
+        return AEADCmd.validateAEAD(deviceHandler, nonce, keyHandle, aead, plaintext);
+    }
+
+    public int loadBufferData(String data, int offset) {
+        return BufferCmd.loadData(deviceHandler, data, offset);
+    }
+
+    public int loadRandomBufferData(int length, int offset) {
+        return BufferCmd.loadRandomData(deviceHandler, length, offset);
+    }
 }

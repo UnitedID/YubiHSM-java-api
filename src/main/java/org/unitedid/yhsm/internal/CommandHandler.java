@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unitedid.yhsm.utility.Utils;
 
-class CommandHandler {
+public class CommandHandler {
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
 
     private CommandHandler() {

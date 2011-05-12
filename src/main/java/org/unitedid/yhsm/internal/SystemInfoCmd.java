@@ -40,7 +40,7 @@ public class SystemInfoCmd {
         result.put("minor", String.valueOf(data[1]));
         result.put("build", String.valueOf(data[2]));
         result.put("protocol", String.valueOf(data[3]));
-        result.put("sysid", "0x"+Utils.byteArrayToHexString(new String(data, 4, 12).getBytes()));
+        result.put("sysid", "0x" + Utils.byteArrayToHexString(new String(data, 4, 12).getBytes()));
 
         return result;
     }

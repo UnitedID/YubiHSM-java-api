@@ -42,7 +42,7 @@ public class AEADCmd {
      * @return
      * @throws Exception
      */
-    public static Map<String, String> generateAEAD(DeviceHandler device, String nonce, int keyHandle, String data) throws Exception {
+    public static Map<String, String> generateAEAD(DeviceHandler device, String nonce, int keyHandle, String data) {
         byte[] nonceBA = Utils.hexToByteArray(nonce);  //TODO: Fix length check and auto padding
 
         //TODO: Fix this properly. Padding data like this for now.

@@ -1,0 +1,8 @@
+ToDo list
+- Proper exception handling
+- Implement all YubiHSM functions
+- Implement YubiHSM api class (empty shell atm)
+- Add javadoc
+- Add junit tests for all vital functions
+- Add logging where necessary
+- Add input validation functions

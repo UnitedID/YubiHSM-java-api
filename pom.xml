@@ -22,23 +22,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>se.su.it.yhsm</groupId>
+    <groupId>org.unitedid</groupId>
     <artifactId>YubiHSM</artifactId>
     <version>0.1-alpha</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <organization>
-      <name>Stockholm University</name>
-      <url>http://www.su.se/</url>
+      <name>United ID</name>
+      <url>http://unitedid.org/</url>
     </organization>
 
     <developers>
       <developer>
-        <id>swold</id>
+        <id>stefan</id>
         <name>Stefan Wold</name>
-        <email>stefan.wold@it.su.se</email>
-        <organization>Stockholm University</organization>
-        <organizationUrl>http://www.su.se/</organizationUrl>
+        <email>stefan.wold@unitedid.org</email>
+        <organization>United ID</organization>
+        <organizationUrl>http://unitedid.org/</organizationUrl>
         <roles>
           <role>developer</role>
           <role>documentation</role>
@@ -54,6 +54,11 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.1</version>
             <scope>test</scope>
@@ -63,13 +68,6 @@
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>javax.comm</groupId>
-            <artifactId>comm</artifactId>
-            <version>3.0</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>gnu.io</groupId>
             <artifactId>RXTXcomm</artifactId>

@@ -25,9 +25,7 @@ import org.unitedid.yhsm.utility.Utils;
 public class CommandHandler {
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
 
-    private CommandHandler() {
-
-    }
+    private CommandHandler() {}
 
     protected static synchronized byte[] execute(DeviceHandler device, byte command, byte[] data, boolean readResponse)  {
         byte[] cmdBuffer;
@@ -38,7 +36,7 @@ public class CommandHandler {
             cmdBuffer = new byte[]{command};
         }
 
-        System.out.println("CMD BUFFER: " + Utils.byteArrayToHexString(Utils.concatAllArrays(cmdBuffer, data)));
+        log.debug("CMD BUFFER: {}", Utils.byteArrayToHexString(Utils.concatAllArrays(cmdBuffer, data)));
         device.write(Utils.concatAllArrays(cmdBuffer, data));
 
         try {
@@ -64,7 +62,7 @@ public class CommandHandler {
             }
 
             if ((result[1] & Defines.YSM_RESPONSE) != 0) {
-                System.out.println("Got response from (" + result[1] + ") " + Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
+                log.info("Got response from ({}) {}", result[1], Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
             }
 
             if (result[1] == (command | Defines.YSM_RESPONSE)) {

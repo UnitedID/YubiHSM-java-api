@@ -18,17 +18,29 @@
 
 package org.unitedid.yhsm.internal;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitedid.yhsm.SetupCommon;
+import org.unitedid.yhsm.utility.Utils;
 
-public class InternalTestSuite {
+public class DeviceHandlerTest extends SetupCommon {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(EchoCmdTest.class);
-        suite.addTestSuite(BufferCmdTest.class);
-        suite.addTestSuite(DeviceHandlerTest.class);
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-        return suite;
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    @Test
+    public void testDrainClearInput() {
+        CommandHandler.execute(deviceHandler, Defines.YSM_ECHO, Utils.addLengthToData("ekoeko".getBytes()), false);
+        assertEquals(9, deviceHandler.available());
+        deviceHandler.drain();
+        assertEquals(0, deviceHandler.available());
     }
 }

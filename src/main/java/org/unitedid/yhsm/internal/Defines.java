@@ -29,6 +29,7 @@ public class Defines {
     /** Size definitions */
     final static public byte YSM_MAX_PKT_SIZE = 0x60;
     final static public byte YSM_AEAD_NONCE_SIZE = 6;
+    final static public byte YSM_DATA_BUF_SIZE = 64;
 
     /**
      * Command codes

@@ -26,6 +26,7 @@ public class InternalTestSuite {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         suite.addTestSuite(EchoCmdTest.class);
+        suite.addTestSuite(BufferCmdTest.class);
 
         return suite;
     }

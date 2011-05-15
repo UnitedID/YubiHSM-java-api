@@ -42,6 +42,7 @@ public class Defines {
     final static public byte YSM_BUFFER_RANDOM_LOAD = 0x21;
     final static public byte YSM_ECHO = 0x23;
     final static public byte YSM_SYSTEM_INFO_QUERY = 0x26;
+    final static public byte YSM_MONITOR_EXIT = 0x7f;
 
     final static public Map<Integer, String> COMMAND_TO_STRING = Collections.unmodifiableMap(new HashMap<Integer, String>() {{
         put(0x00, "YSM_NULL");

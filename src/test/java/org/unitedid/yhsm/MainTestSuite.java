@@ -16,28 +16,20 @@
  * @author Stefan Wold <stefan.wold@unitedid.org>
  */
 
-package org.unitedid.yhsm.internal;
+package org.unitedid.yhsm;
 
-import junit.framework.TestCase;
-import org.junit.*;
-import org.unitedid.yhsm.SetupCommon;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.unitedid.yhsm.internal.InternalTestSuite;
+import org.unitedid.yhsm.utility.UtilityTestSuite;
 
-import static org.junit.Assert.*;
+public class MainTestSuite {
 
-public class EchoCmdTest extends SetupCommon {
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTest(InternalTestSuite.suite());
+        suite.addTest(UtilityTestSuite.suite());
 
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    @Test
-    public void testEchoReturnValidData() {
-        assertEquals("ekoeko", EchoCmd.execute(deviceHandler, "ekoeko"));
+        return suite;
     }
 }

@@ -47,8 +47,8 @@ public class YubiHSM  {
         Map<String, String> info = SystemInfoCmd.execute(deviceHandler);
 
         return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
-                                                                           info.get("build"), info.get("protocol"),
-                                                                           info.get("sysid"));
+                                                                         info.get("build"), info.get("protocol"),
+                                                                         info.get("sysid"));
     }
 
     public Map<String, String> generateAEAD(String nonce, int keyHandle, String data) {
@@ -73,5 +73,17 @@ public class YubiHSM  {
 
     public int loadRandomBufferData(int length, int offset) {
         return BufferCmd.loadRandomData(deviceHandler, length, offset);
+    }
+
+    public void exitMonitorDebugMode() {
+        MonitorExitCmd.execute(deviceHandler);
+    }
+
+    public boolean drainData() {
+        return deviceHandler.drain();
+    }
+
+    public DeviceHandler getRawDevice() {
+        return deviceHandler;
     }
 }

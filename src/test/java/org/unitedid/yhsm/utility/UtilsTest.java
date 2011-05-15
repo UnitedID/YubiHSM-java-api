@@ -18,10 +18,11 @@
 
 package org.unitedid.yhsm.utility;
 
+import junit.framework.TestCase;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-public class UtilsTest {
+public class UtilsTest extends TestCase {
     @Test
     public void testAddLengthToData() throws Exception {
         byte[] data = "ekoeko".getBytes();

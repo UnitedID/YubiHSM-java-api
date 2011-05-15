@@ -18,20 +18,25 @@
 
 package org.unitedid.yhsm;
 
+import junit.framework.TestCase;
 import org.junit.*;
 import org.unitedid.yhsm.internal.DeviceHandler;
 import org.unitedid.yhsm.internal.DeviceHandlerFactory;
 
-public class SetupCommon {
+public class SetupCommon extends TestCase {
+    public YubiHSM hsm;
     public DeviceHandler deviceHandler;
+    public int keyHandle = 8192;
 
     @Before
     public void setUp() throws Exception {
-        deviceHandler = DeviceHandlerFactory.get("/dev/ttyACM0", 1);
+        hsm = new YubiHSM("/dev/ttyACM0", 1);
+        deviceHandler = hsm.getRawDevice();
     }
 
     @After
     public void tearDown() throws Exception {
+        hsm = null;
         deviceHandler = null;
     }
 

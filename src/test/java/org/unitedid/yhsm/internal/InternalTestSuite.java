@@ -18,26 +18,15 @@
 
 package org.unitedid.yhsm.internal;
 
-import junit.framework.TestCase;
-import org.junit.*;
-import org.unitedid.yhsm.SetupCommon;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import static org.junit.Assert.*;
+public class InternalTestSuite {
 
-public class EchoCmdTest extends SetupCommon {
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTestSuite(EchoCmdTest.class);
 
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    @Test
-    public void testEchoReturnValidData() {
-        assertEquals("ekoeko", EchoCmd.execute(deviceHandler, "ekoeko"));
+        return suite;
     }
 }

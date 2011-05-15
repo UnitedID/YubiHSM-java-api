@@ -21,6 +21,7 @@ package org.unitedid.yhsm.internal;
 import gnu.io.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unitedid.yhsm.utility.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +60,7 @@ public class DeviceHandler {
         }
     }
 
-    protected void write(byte[] data) {
+    public void write(byte[] data) {
         try {
             writtenBytes += data.length;
             writeStream.write(data);
@@ -68,7 +69,7 @@ public class DeviceHandler {
         }
     }
 
-    protected byte[] read(int readNumBytes) {
+    public byte[] read(int readNumBytes) {
         byte[] data = new byte[readNumBytes];
         try {
             readBytes += readStream.read(data, 0, readNumBytes);
@@ -79,13 +80,32 @@ public class DeviceHandler {
         return data;
     }
 
-    protected int available() {
+    public int available() {
         try {
             return readStream.available();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public boolean drain() {
+        try {
+            byte[] buffer = new byte[0];
+            while(readStream.available() > 0) {
+                byte[] b = read(1);
+                if ((char)b[0] == '\r') {
+                    log.info("Drained: {}", new String(buffer, 0, buffer.length)); //TODO: Do we really need to log this? If not the loop can be simplified.
+                    buffer = new byte[0];
+                } else {
+                    buffer = Utils.concatAllArrays(buffer, b);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return true;
     }
 
     public void flush() throws IOException {

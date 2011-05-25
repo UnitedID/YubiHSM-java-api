@@ -52,7 +52,6 @@ public class YubiHSM  {
     }
 
     public Map<String, String> generateAEAD(String nonce, int keyHandle, String data) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        log.info("Key length: {}", Defines.getHashLength());
         return AEADCmd.generateAEAD(deviceHandler, nonce, keyHandle, data);
     }
 

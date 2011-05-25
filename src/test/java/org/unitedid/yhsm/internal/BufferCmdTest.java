@@ -38,14 +38,14 @@ public class BufferCmdTest extends SetupCommon {
     }
 
     @Test
-    public void testLoadData() {
+    public void testLoadData() throws YubiHSMErrorException {
         assertEquals(5, BufferCmd.loadData(deviceHandler, "12345", 0));
         assertEquals(7, BufferCmd.loadData(deviceHandler, "12", 5));
         assertEquals(2, BufferCmd.loadData(deviceHandler, "12", 0));
     }
 
     @Test
-    public void testRandom() {
+    public void testRandom() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         String nonce = "112233445566";
         hsm.loadRandomBufferData(20, 0);
         Map aead1 = hsm.generateBufferAEAD(nonce, keyHandle);
@@ -56,7 +56,7 @@ public class BufferCmdTest extends SetupCommon {
     }
 
     @Test
-    public void testWouldOverflowBuffer() {
+    public void testWouldOverflowBuffer() throws YubiHSMErrorException {
         assertEquals(64, hsm.loadRandomBufferData(16, Defines.YSM_DATA_BUF_SIZE - 8));
         assertEquals(16, hsm.loadRandomBufferData(16, 0));
         assertEquals(17, hsm.loadRandomBufferData(1, 16));

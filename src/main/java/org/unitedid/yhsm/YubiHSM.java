@@ -51,27 +51,32 @@ public class YubiHSM  {
                                                                          info.get("sysid"));
     }
 
-    public Map<String, String> generateAEAD(String nonce, int keyHandle, String data) {
+    public Map<String, String> generateAEAD(String nonce, int keyHandle, String data) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        log.info("Key length: {}", Defines.getHashLength());
         return AEADCmd.generateAEAD(deviceHandler, nonce, keyHandle, data);
     }
 
-    public Map<String, String> generateRandomAEAD(String nonce, int keyHandle, int length) {
+    public Map<String, String> generateRandomAEAD(String nonce, int keyHandle, int length) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return AEADCmd.generateRandomAEAD(deviceHandler, nonce, keyHandle, length);
     }
 
-    public Map<String, String> generateBufferAEAD(String nonce, int keyHandle) {
+    public Map<String, String> generateBufferAEAD(String nonce, int keyHandle) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return AEADCmd.generateBufferAEAD(deviceHandler, nonce, keyHandle);
     }
 
-    public boolean validateAEAD(String nonce, int keyHandle, String aead, String plaintext) {
+    public boolean validateAEAD(String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException {
         return AEADCmd.validateAEAD(deviceHandler, nonce, keyHandle, aead, plaintext);
     }
 
-    public int loadBufferData(String data, int offset) {
+    public int loadBufferData(String data, int offset) throws YubiHSMErrorException {
         return BufferCmd.loadData(deviceHandler, data, offset);
     }
 
-    public int loadRandomBufferData(int length, int offset) {
+    public int loadBufferData(byte[] data, int offset) throws YubiHSMErrorException {
+        return BufferCmd.loadData(deviceHandler, data, offset);
+    }
+
+    public int loadRandomBufferData(int length, int offset) throws YubiHSMErrorException {
         return BufferCmd.loadRandomData(deviceHandler, length, offset);
     }
 

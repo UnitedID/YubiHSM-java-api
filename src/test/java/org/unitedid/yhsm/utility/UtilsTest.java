@@ -60,7 +60,7 @@ public class UtilsTest extends TestCase {
         byte[] data = "ekoeko".getBytes();
         String expected = "656b6f656b6f";
 
-        assertEquals(expected, Utils.byteArrayToHexString(data));
+        assertEquals(expected, Utils.byteArrayToHex(data));
     }
 
     @Test

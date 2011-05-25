@@ -24,7 +24,7 @@ public class BufferCmd {
 
     private BufferCmd() {}
 
-    public static int loadData(DeviceHandler device, String data, int offset) {
+    public static int loadData(DeviceHandler device, String data, int offset) throws YubiHSMErrorException {
         int dataLength = data.getBytes().length;
         byte[] off = {(byte) ((offset << 24) >> 24)};
 
@@ -34,18 +34,27 @@ public class BufferCmd {
         return parseResult(offset, dataLength, result);
     }
 
-    public static int loadRandomData(DeviceHandler device, int size, int offset) {
+    public static int loadData(DeviceHandler device, byte[] data, int offset) throws YubiHSMErrorException {
+        int dataLength = data.length;
+        byte[] off = {(byte) ((offset << 24) >> 24)};
+        byte[] cmdBuffer = Utils.concatAllArrays(off, Utils.addLengthToData(data));
+        byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_LOAD, cmdBuffer, true);
+
+        return parseResult(offset, dataLength, result);
+    }
+
+    public static int loadRandomData(DeviceHandler device, int size, int offset) throws YubiHSMErrorException {
         byte[] cmdBuffer = {(byte) ((offset << 24) >> 24), (byte) ((size << 24) >> 24)};
         byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_RANDOM_LOAD, cmdBuffer, true);
 
         return parseResult(offset, size, result);
     }
 
-    private static int parseResult(int offset, int dataLength, byte[] data) {
+    private static int parseResult(int offset, int dataLength, byte[] data) throws YubiHSMErrorException {
         int count = data[0];
         if (offset == 0) {
             if (count != dataLength) {
-                System.out.println("Incorrect number of bytes in buffer, got " + count + ", expected " + dataLength);
+                throw new YubiHSMErrorException("Incorrect number of bytes in buffer, got " + count + ", expected " + dataLength);
             }
         }
 

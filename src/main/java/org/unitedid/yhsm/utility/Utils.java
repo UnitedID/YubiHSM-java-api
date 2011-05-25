@@ -18,10 +18,10 @@
 
 package org.unitedid.yhsm.utility;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
+import org.unitedid.yhsm.internal.Defines;
+import org.unitedid.yhsm.internal.YubiHSMErrorException;
+import org.unitedid.yhsm.internal.YubiHSMInputException;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -69,18 +69,10 @@ public class Utils {
         return buffer.array();
     }
 
-    public static byte[] intToByteArray(int value) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataOutputStream dout = new DataOutputStream(out);
-        try {
-            dout.writeInt(value);
-            dout.flush();
-            dout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static int leBAToBeInt(byte[] data) {
+        ByteBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
 
-        return out.toByteArray();
+        return buffer.getInt();
     }
 
     public static byte[] rangeOfByteArray(byte[] data, int offset, int length) {
@@ -92,7 +84,7 @@ public class Utils {
         return buffer;
     }
 
-    public static String byteArrayToHexString(byte[] b) {
+    public static String byteArrayToHex(byte[] b) {
         String result = "";
         for (int i=0; i < b.length; i++) {
             result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
@@ -102,10 +94,28 @@ public class Utils {
 
     public static byte[] hexToByteArray(String hex) {
         byte data[] = new byte[hex.length()/2];
-        for(int i=0;i < hex.length();i+=2) {
-            data[i/2] = (Integer.decode("0x"+hex.charAt(i)+hex.charAt(i+1))).byteValue();
+        for(int i=0; i < hex.length(); i+=2) {
+            data[i/2] = (Integer.decode("0x" + hex.charAt(i) + hex.charAt(i+1))).byteValue();
         }
         return data;
+    }
+
+    public static byte[] validateNonce(byte[] nonce, boolean padding) throws YubiHSMInputException {
+        if (nonce.length > Defines.YSM_AEAD_NONCE_SIZE) {
+            throw new YubiHSMInputException("Nonce too long, expected " + Defines.YSM_AEAD_NONCE_SIZE + "bytes but got " + nonce.length + " bytes.");
+        }
+        if (padding && nonce.length <= Defines.YSM_AEAD_NONCE_SIZE) {
+            return Arrays.copyOf(nonce, Defines.YSM_AEAD_NONCE_SIZE);
+        }
+
+        return nonce;
+    }
+
+    public static String validateCmdResponseString(String name, String got, String expected) throws YubiHSMErrorException {
+        if (!got.equals(expected)) {
+            throw new YubiHSMErrorException("Bad " + name + " in response (got " + got + ", expected " + expected + ")");
+        }
+        return got;
     }
 
     public Object clone() throws CloneNotSupportedException {

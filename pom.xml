@@ -72,8 +72,7 @@
             <groupId>gnu.io</groupId>
             <artifactId>RXTXcomm</artifactId>
             <version>2.2pre2</version>
-            <scope>system</scope>
-            <systemPath>/usr/lib/jdk1.6.0_24/jre/lib/ext/RXTXcomm.jar</systemPath>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

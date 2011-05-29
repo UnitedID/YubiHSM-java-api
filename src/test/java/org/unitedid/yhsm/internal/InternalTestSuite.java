@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({EchoCmdTest.class, BufferCmdTest.class, DeviceHandlerTest.class})
+@Suite.SuiteClasses({EchoCmdTest.class, BufferCmdTest.class, DeviceHandlerTest.class, AEADCmdTest.class})
 
 public class InternalTestSuite {
 

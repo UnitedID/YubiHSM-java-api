@@ -52,11 +52,11 @@ public class ConfigureHSM extends SetupCommon {
 
     private void addKeys() throws Exception {
 
-        for (int i = 0; i < 32; i++ ) {
+        for (int i = 0; i <= 30; i++ ) {
             int flags = 1 << i;
             String key = new String();
             key = duplicateStr(String.format("%02x", i + 1), 32);
-            addKey(flags, i, key);
+            addKey(flags, i + 1, key);
         }
 
         addKey(0x200, 0x1000, duplicateStr("06", 32));

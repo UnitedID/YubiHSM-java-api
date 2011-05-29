@@ -32,6 +32,7 @@ public class Defines {
     final static public int YSM_AEAD_MAC_SIZE = 8;
     final static public byte YSM_DATA_BUF_SIZE = 64;
     final static public int YSM_MAX_KEY_SIZE = 32;
+    final static public int YSM_AEAD_MAX_SIZE = YSM_DATA_BUF_SIZE + YSM_AEAD_MAC_SIZE;
     final static public int YSM_OTP_SIZE = 16;
     final static public int UID_SIZE = 6;
     final static public int KEY_SIZE = 16;

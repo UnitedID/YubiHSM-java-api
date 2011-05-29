@@ -29,6 +29,7 @@ public class YubiHSM  {
     private final Logger log = LoggerFactory.getLogger(YubiHSM.class);
 
     private DeviceHandler deviceHandler;
+    public static int minHashLength = 20;
 
     public YubiHSM(String device, int timeout) {
         deviceHandler = DeviceHandlerFactory.get(device, timeout);
@@ -63,7 +64,7 @@ public class YubiHSM  {
         return AEADCmd.generateBufferAEAD(deviceHandler, nonce, keyHandle);
     }
 
-    public boolean validateAEAD(String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException {
+    public boolean validateAEAD(String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
         return AEADCmd.validateAEAD(deviceHandler, nonce, keyHandle, aead, plaintext);
     }
 
@@ -89,5 +90,13 @@ public class YubiHSM  {
 
     public DeviceHandler getRawDevice() {
         return deviceHandler;
+    }
+
+    public int getMinHashLength() {
+        return minHashLength;
+    }
+
+    public void setMinHashLength(int value) {
+        minHashLength = value;
     }
 }

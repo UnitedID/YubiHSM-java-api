@@ -102,7 +102,7 @@ public class Utils {
 
     public static byte[] validateNonce(byte[] nonce, boolean padding) throws YubiHSMInputException {
         if (nonce.length > Defines.YSM_AEAD_NONCE_SIZE) {
-            throw new YubiHSMInputException("Nonce too long, expected " + Defines.YSM_AEAD_NONCE_SIZE + "bytes but got " + nonce.length + " bytes.");
+            throw new YubiHSMInputException("Nonce too long, expected " + Defines.YSM_AEAD_NONCE_SIZE + " bytes but got " + nonce.length + " bytes.");
         }
         if (padding && nonce.length <= Defines.YSM_AEAD_NONCE_SIZE) {
             return Arrays.copyOf(nonce, Defines.YSM_AEAD_NONCE_SIZE);
@@ -111,9 +111,40 @@ public class Utils {
         return nonce;
     }
 
+    public static String validateString(String name, String data, int maxLength, int exactLength) throws YubiHSMInputException {
+        if (maxLength > 0 && data.length() > maxLength) {
+            throw new YubiHSMInputException("Argument '" + name + "' is too long, expected max " + maxLength + " but got " + data.length());
+        }
+        if (exactLength > 0 && data.length() != exactLength) {
+            throw new YubiHSMInputException("Wrong size of argument '" + name + "', expected " + exactLength + " but got " + data.length());
+        }
+
+        return data;
+    }
+
+    public static byte[] validateByteArray(String name, byte[] data, int maxLength, int exactLength, int paddingLength) throws YubiHSMInputException {
+        if (paddingLength > 0 && data.length < paddingLength) {
+            data = Arrays.copyOf(data, paddingLength);
+        }
+        if (maxLength > 0 && data.length > maxLength) {
+            throw new YubiHSMInputException("Argument '" + name + "' is too long, expected max " + maxLength + " but got " + data.length);
+        }
+        if (exactLength > 0 && data.length != exactLength) {
+            throw new YubiHSMInputException("Wrong size of argument '" + name + "', expected " + exactLength + " but got " + data.length);
+        }
+        return data;
+    }
+
     public static String validateCmdResponseString(String name, String got, String expected) throws YubiHSMErrorException {
         if (!got.equals(expected)) {
             throw new YubiHSMErrorException("Bad " + name + " in response (got " + got + ", expected " + expected + ")");
+        }
+        return got;
+    }
+
+    public static byte[] validateCmdResponseBA(String name, byte[] got, byte[] expected) throws YubiHSMErrorException {
+        if (!Arrays.equals(got, expected)) {
+            throw new YubiHSMErrorException("Bad " + name + " in response (Got 0x" + byteArrayToHex(got) + ", expected 0x" + byteArrayToHex(expected));
         }
         return got;
     }

@@ -25,6 +25,9 @@ import org.unitedid.yhsm.SetupCommon;
 
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+
 public class BufferCmdTest extends SetupCommon {
 
     @Before

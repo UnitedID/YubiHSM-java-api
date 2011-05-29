@@ -18,12 +18,10 @@
 
 package org.unitedid.yhsm;
 
-import junit.framework.TestCase;
 import org.junit.*;
 import org.unitedid.yhsm.internal.DeviceHandler;
-import org.unitedid.yhsm.internal.DeviceHandlerFactory;
 
-public class SetupCommon extends TestCase {
+public class SetupCommon {
     public YubiHSM hsm;
     public DeviceHandler deviceHandler;
     public int keyHandle = 8192;

@@ -18,11 +18,20 @@
 
 package org.unitedid.yhsm.utility;
 
-import junit.framework.TestCase;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.unitedid.yhsm.internal.Defines;
+import org.unitedid.yhsm.internal.YubiHSMInputException;
 
-public class UtilsTest extends TestCase {
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
+public class UtilsTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void testAddLengthToData() throws Exception {
         byte[] data = "ekoeko".getBytes();
@@ -69,5 +78,21 @@ public class UtilsTest extends TestCase {
         byte[] expected = {0x65,0x6b,0x6f,0x65,0x6b,0x6f};
 
         assertArrayEquals(expected, Utils.hexToByteArray(data));
+    }
+
+    @Test
+    public void testValidateNonce() throws Exception {
+        String data = "12";
+        assertEquals(Defines.YSM_AEAD_NONCE_SIZE, Utils.validateNonce(data.getBytes(), true).length);
+        assertEquals(2, Utils.validateNonce(data.getBytes(), false).length);
+
+    }
+
+    @Test
+    public void testNonceInputException() throws YubiHSMInputException {
+        thrown.expect(YubiHSMInputException.class);
+        thrown.expectMessage("Nonce too long, expected 6 bytes but got 7 bytes.");
+        String data = "1234567";
+        Utils.validateNonce(data.getBytes(), false);
     }
 }

@@ -18,18 +18,14 @@
 
 package org.unitedid.yhsm;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import org.unitedid.yhsm.internal.InternalTestSuite;
 import org.unitedid.yhsm.utility.UtilityTestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({InternalTestSuite.class, UtilityTestSuite.class})
 
 public class MainTestSuite {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTest(InternalTestSuite.suite());
-        suite.addTest(UtilityTestSuite.suite());
-
-        return suite;
-    }
 }

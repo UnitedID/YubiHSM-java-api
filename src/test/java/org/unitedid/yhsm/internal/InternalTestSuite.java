@@ -18,17 +18,12 @@
 
 package org.unitedid.yhsm.internal;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({EchoCmdTest.class, BufferCmdTest.class, DeviceHandlerTest.class})
 
 public class InternalTestSuite {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(EchoCmdTest.class);
-        suite.addTestSuite(BufferCmdTest.class);
-        suite.addTestSuite(DeviceHandlerTest.class);
-
-        return suite;
-    }
 }

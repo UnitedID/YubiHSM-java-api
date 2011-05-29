@@ -18,7 +18,6 @@
 
 package org.unitedid.yhsm.internal;
 
-import junit.framework.TestCase;
 import org.junit.*;
 import org.unitedid.yhsm.SetupCommon;
 

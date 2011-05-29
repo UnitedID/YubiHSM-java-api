@@ -18,15 +18,11 @@
 
 package org.unitedid.yhsm.utility;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses(UtilsTest.class)
 public class UtilityTestSuite {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(UtilsTest.class);
-
-        return suite;
-    }
 }

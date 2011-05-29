@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.Utils;
 
+import static org.junit.Assert.assertEquals;
+
 public class DeviceHandlerTest extends SetupCommon {
 
     @Before

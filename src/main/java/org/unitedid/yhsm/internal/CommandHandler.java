@@ -36,11 +36,11 @@ public class CommandHandler {
             cmdBuffer = new byte[]{command};
         }
 
-        log.debug("CMD BUFFER: {}", Utils.byteArrayToHexString(Utils.concatAllArrays(cmdBuffer, data)));
+        log.info("CMD BUFFER: {}", Utils.byteArrayToHex(Utils.concatAllArrays(cmdBuffer, data)));
         device.write(Utils.concatAllArrays(cmdBuffer, data));
 
         try {
-            Thread.sleep(100); //TODO: Implement event listener
+            Thread.sleep(20); //TODO: Implement event listener
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -56,7 +56,7 @@ public class CommandHandler {
             if (device.available() > 0) {
                 result = device.read(2);
             }
-            if (result.length == 0 || result == null) {
+            if (result.length == 0) {
                 reset(device);
                 throw new Exception("No data recieved from the YubiHSM!");
             }

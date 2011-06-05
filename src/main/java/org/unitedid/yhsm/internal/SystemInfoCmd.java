@@ -27,7 +27,7 @@ public class SystemInfoCmd {
 
     private SystemInfoCmd() {}
 
-    public static Map<String, String> execute(DeviceHandler device) {
+    public static Map<String, String> execute(DeviceHandler device) throws YubiHSMErrorException {
         byte[] empty = new byte[0];
         byte[] result = CommandHandler.execute(device, Defines.YSM_SYSTEM_INFO_QUERY, empty, true);
 
@@ -44,9 +44,4 @@ public class SystemInfoCmd {
 
         return result;
     }
-
-    public Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
-    }
-
 }

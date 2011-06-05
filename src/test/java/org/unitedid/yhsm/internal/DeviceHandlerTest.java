@@ -39,7 +39,7 @@ public class DeviceHandlerTest extends SetupCommon {
     }
 
     @Test
-    public void testDrainClearInput() {
+    public void testDrainClearInput() throws YubiHSMErrorException {
         CommandHandler.execute(deviceHandler, Defines.YSM_ECHO, Utils.addLengthToData("ekoeko".getBytes()), false);
         assertEquals(9, deviceHandler.available());
         deviceHandler.drain();

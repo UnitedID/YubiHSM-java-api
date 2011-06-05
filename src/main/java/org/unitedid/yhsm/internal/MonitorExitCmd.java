@@ -27,8 +27,9 @@ public class MonitorExitCmd {
      * Send the magics to the HSM to get it to exit to configuration mode.
      *
      * @param deviceHandler the device handler
+     * @throws YubiHSMErrorException if the YubiHSM command failed to execute
      */
-    public static void execute(DeviceHandler deviceHandler) {
+    public static void execute(DeviceHandler deviceHandler) throws YubiHSMErrorException {
         byte[] data = Utils.concatAllArrays(Utils.leIntToBA(0xbaadbeef),Utils.leIntToBA(0xffffffff - 0xbaadbeef));
         CommandHandler.execute(deviceHandler, Defines.YSM_MONITOR_EXIT, data, false);
     }

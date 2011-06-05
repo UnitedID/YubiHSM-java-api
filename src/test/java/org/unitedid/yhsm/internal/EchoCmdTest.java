@@ -36,7 +36,7 @@ public class EchoCmdTest extends SetupCommon {
     }
 
     @Test
-    public void testEchoReturnValidData() {
+    public void testEchoReturnValidData() throws YubiHSMErrorException {
         assertEquals("ekoeko", EchoCmd.execute(deviceHandler, "ekoeko"));
     }
 }

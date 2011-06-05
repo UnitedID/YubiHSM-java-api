@@ -27,7 +27,7 @@ public class CommandHandler {
 
     private CommandHandler() {}
 
-    protected static synchronized byte[] execute(DeviceHandler device, byte command, byte[] data, boolean readResponse)  {
+    protected static synchronized byte[] execute(DeviceHandler device, byte command, byte[] data, boolean readResponse) throws YubiHSMErrorException {
         byte[] cmdBuffer;
 
         if (command != Defines.YSM_NULL) {
@@ -50,35 +50,31 @@ public class CommandHandler {
         return readDevice(device, command);
     }
 
-    private static byte[] readDevice(DeviceHandler device, byte command) {
+    private static byte[] readDevice(DeviceHandler device, byte command) throws YubiHSMErrorException {
         byte[] result = new byte[0];
-        try {
-            if (device.available() > 0) {
-                result = device.read(2);
-            }
-            if (result.length == 0) {
-                reset(device);
-                throw new Exception("No data recieved from the YubiHSM!");
-            }
 
-            if ((result[1] & Defines.YSM_RESPONSE) != 0) {
-                log.info("Got response from ({}) {}", result[1], Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
-            }
-
-            if (result[1] == (command | Defines.YSM_RESPONSE)) {
-                int len = (int)result[0] - 1;
-                return device.read(len);
-            } else {
-                reset(device);
-                throw new Exception("YubiHSM responded to the wrong command!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (device.available() > 0) {
+            result = device.read(2);
         }
-        return null;
+        if (result.length == 0) {
+            reset(device);
+            throw new YubiHSMErrorException("No data recieved from the YubiHSM!");
+        }
+
+        if ((result[1] & Defines.YSM_RESPONSE) != 0) {
+            log.info("Got response from ({}) {}", result[1], Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
+        }
+
+        if (result[1] == (command | Defines.YSM_RESPONSE)) {
+            int len = (int)result[0] - 1;
+            return device.read(len);
+        } else {
+            reset(device);
+            throw new YubiHSMErrorException("YubiHSM responded to the wrong command!");
+        }
     }
 
-    public static void reset(DeviceHandler device) {
+    public static void reset(DeviceHandler device) throws YubiHSMErrorException {
         byte[] reset = new byte[Defines.YSM_MAX_PKT_SIZE - 1];
         for (int i=0; i < Defines.YSM_MAX_PKT_SIZE - 1; i++) {
             reset[i] = 0x00;

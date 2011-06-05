@@ -36,8 +36,13 @@ public class YubiHSM  {
     /** The hash length, default is 20 */
     public static int minHashLength = 20;
 
-    /** Constructor */
-    public YubiHSM(String device, int timeout) {
+    /** Constructor
+     *
+     * @param device the YubiHSM device name ie /dev/ttyACM0
+     * @param timeout the read timeout (not implemented yet)
+     * @throws YubiHSMErrorException if the YubiHSM reset command fail
+     */
+    public YubiHSM(String device, int timeout) throws YubiHSMErrorException {
         deviceHandler = DeviceHandlerFactory.get(device, timeout);
         CommandHandler.reset(deviceHandler);
     }
@@ -47,17 +52,19 @@ public class YubiHSM  {
      *
      * @param str the string that the YubiHSM should return
      * @return the the same string sent to the YubiHSM
+     * @throws YubiHSMErrorException if the YubiHSM echo command fail
      */
-    public String echo(String str) {
+    public String echo(String str) throws YubiHSMErrorException {
         return EchoCmd.execute(deviceHandler, str);
     }
 
     /**
-     * Get the firmware version and unqiue ID from the YubiHSM.
+     * Get the firmware version and unique ID from the YubiHSM.
      *
      * @return a map with version, protocol and unique ID
+     * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
-    public Map<String, String> info() {
+    public Map<String, String> info() throws YubiHSMErrorException {
         return SystemInfoCmd.execute(deviceHandler);
     }
 
@@ -65,8 +72,9 @@ public class YubiHSM  {
      * Get the firmware verseion and unique ID from the YubiHSM (string representation).
      *
      * @return a string with version, protocol and unique ID
+     * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
-    public String infoToString() {
+    public String infoToString() throws YubiHSMErrorException {
         Map<String, String> info = SystemInfoCmd.execute(deviceHandler);
 
         return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
@@ -178,8 +186,10 @@ public class YubiHSM  {
 
     /**
      * Tell the YubiHSM to exit to configuration mode (requires 'debug' mode enabled).
+     *
+     * @throws YubiHSMErrorException if the YubiHSM exit monitor command fail
      */
-    public void exitMonitorDebugMode() {
+    public void exitMonitorDebugMode() throws YubiHSMErrorException {
         MonitorExitCmd.execute(deviceHandler);
     }
 

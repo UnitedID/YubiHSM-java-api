@@ -20,20 +20,31 @@ package org.unitedid.yhsm.internal;
 
 import org.unitedid.yhsm.utility.Utils;
 
+/** <code>EchoCmd</code> implements the YubiHSM echo command. */
 public class EchoCmd {
 
+    /** Private constructor */
     private EchoCmd() {}
 
+    /**
+     * Test the YubiHSM by sending a string that the YubiHSM will echo back.
+     *
+     * @param device the device handler
+     * @param data the string that the YubiHSM should return
+     * @return the the same string sent to the YubiHSM
+     */
     public static String execute(DeviceHandler device, String data) {
         byte[] buffer = CommandHandler.execute(device, Defines.YSM_ECHO, Utils.addLengthToData(data.getBytes()), true);
         return parseResult(buffer);
     }
 
+    /**
+     * Parse the echo response from the YubiHSM.
+     *
+     * @param data the result from the YubiHSM
+     * @return the string echoed
+     */
     private static String parseResult(byte[] data) {
         return new String(data, 1, data[0]);
-    }
-
-    public Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
     }
 }

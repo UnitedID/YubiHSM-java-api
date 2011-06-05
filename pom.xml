@@ -101,4 +101,22 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+                    </links>
+                    <quiet>true</quiet>
+                    <version>true</version>
+                    <doctitle>${project.name} ${project.version} Java API.</doctitle>
+                    <windowtitle>${project.name} ${project.version} Java API.</windowtitle>
+                    <overview>src/main/java/overview.html</overview>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

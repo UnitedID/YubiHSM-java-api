@@ -84,6 +84,55 @@ public class YubiHSM  {
         MonitorExitCmd.execute(deviceHandler);
     }
 
+    /**
+     * Generate HMAC SHA1 using a key handle in the YubiHSM.
+     *
+     * @param data the data used to generate the SHA1
+     * @param keyHandle the key handle to use in the YubiHSM
+     * @param last set to false to not get a hash generated for the initial request
+     * @param toBuffer set to true to get the SHA1 stored into the internal buffer, for use in some other cryptographic operations.
+     * @return a map containing status and SHA1 hash
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public Map<String, String> generateHMACSHA1(String data, int keyHandle, boolean last, boolean toBuffer) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        return HMACCmd.generateHMACSHA1(deviceHandler, data, keyHandle, (byte) 0, last, toBuffer);
+    }
+
+    /**
+     * Generate HMAC SHA1 using a key handle in the YubiHSM.
+     *
+     * @param data the data used to generate the SHA1
+     * @param keyHandle the key handle to use in the YubiHSM
+     * @param flags set custom flags to be used when generating a SHA1, if set to (byte) 0 defaults will be used.
+     * @param last set to false to not get a hash generated for the initial request
+     * @param toBuffer set to true to get the SHA1 stored into the internal buffer, for use in some other cryptographic operations.
+     * @return a map containing status and SHA1 hash
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public Map<String, String> generateHMACSHA1(String data, int keyHandle, byte flags, boolean last, boolean toBuffer) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        return HMACCmd.generateHMACSHA1(deviceHandler, data, keyHandle, flags, last, toBuffer);
+    }
+
+    /**
+     * Add more input to the HMAC SHA1, used after calling {@link #generateHMACSHA1} with last set to false.
+     *
+     * @param data the data to add before generating SHA1
+     * @param keyHandle the key handle to use in the YubiHSM
+     * @param last set to false to not get a hash generated after this call
+     * @param toBuffer set to true to get the SHA1 stored into the internal buffer, for use in some other cryptographic operations.
+     * @return a map containing status and SHA1 hash
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public Map<String, String> generateHMACSHA1Next(String data, int keyHandle, boolean last, boolean toBuffer) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        return HMACCmd.next(deviceHandler, data, keyHandle, last, toBuffer);
+    }
+
     public boolean drainData() {
         return deviceHandler.drain();
     }

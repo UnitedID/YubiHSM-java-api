@@ -58,7 +58,7 @@ public class CommandHandler {
         }
         if (result.length == 0) {
             reset(device);
-            throw new YubiHSMErrorException("No data recieved from the YubiHSM!");
+            throw new YubiHSMErrorException("No data received from the YubiHSM!");
         }
 
         if ((result[1] & Defines.YSM_RESPONSE) != 0) {

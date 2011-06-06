@@ -36,7 +36,8 @@ public class YubiHSM  {
     /** The hash length, default is 20 */
     public static int minHashLength = 20;
 
-    /** Constructor
+    /**
+     * Constructor
      *
      * @param device the YubiHSM device name ie /dev/ttyACM0
      * @param timeout the read timeout (not implemented yet)
@@ -240,6 +241,49 @@ public class YubiHSM  {
      */
     public Map<String, String> generateHMACSHA1Next(String data, int keyHandle, boolean last, boolean toBuffer) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
         return HMACCmd.next(deviceHandler, data, keyHandle, last, toBuffer);
+    }
+
+    /**
+     * AES ECB encrypt a plaintext string using a specific key handle.
+     *
+     * @param keyHandle the key handle to use when encrypting AES ECB
+     * @param plaintext the plaintext string
+     * @return a hash string in hex format
+     * @throws YubiHSMInputException if an argument does not validate
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     */
+    public String encryptAES_ECB(String plaintext, int keyHandle) throws YubiHSMErrorException, YubiHSMInputException, YubiHSMCommandFailedException {
+        return AESECBCmd.encrypt(deviceHandler, keyHandle, plaintext);
+    }
+
+    /**
+     * AES ECB decrypt a cipher text using a specific key handle.
+     *
+     * @param keyHandle the key handle to use when decrypting AES ECB
+     * @param cipherText the cipher string
+     * @return a plaintext string
+     * @throws YubiHSMInputException if an argument does not validate
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     */
+    public String decryptAES_ECB(String cipherText, int keyHandle) throws YubiHSMErrorException, YubiHSMInputException, YubiHSMCommandFailedException {
+        return AESECBCmd.decrypt(deviceHandler, keyHandle, cipherText);
+    }
+
+    /**
+     * AES ECB decrypt a cipher text using a specific key handle, and then compare it with the supplied plaintext.
+     *
+     * @param keyHandle the key handle to use when comparing AES ECB cipher with plaintext
+     * @param cipherText the cipher string
+     * @param plaintext the plaintext string
+     * @return true if successful, false if not successful
+     * @throws YubiHSMInputException if an argument does not validate
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     */
+    public boolean compareAES_ECB(int keyHandle, String cipherText, String plaintext) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return AESECBCmd.compare(deviceHandler, keyHandle, cipherText, plaintext);
     }
 
     /**

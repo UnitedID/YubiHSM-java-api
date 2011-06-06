@@ -35,6 +35,7 @@ public class Defines {
     final static public int YSM_AEAD_MAX_SIZE = YSM_DATA_BUF_SIZE + YSM_AEAD_MAC_SIZE;
     final static public int YSM_SHA1_HASH_SIZE = 20;
     final static public int YSM_OTP_SIZE = 16;
+    final static public int YSM_BLOCK_SIZE = 16;
     final static public int UID_SIZE = 6;
     final static public int KEY_SIZE = 16;
     final static public int YSM_YUBIKEY_AEAD_SIZE = KEY_SIZE + UID_SIZE + YSM_AEAD_MAC_SIZE;
@@ -55,6 +56,9 @@ public class Defines {
     final static public byte YSM_RANDOM_AEAD_GENERATE = 0x03;
     final static public byte YSM_AEAD_DECRYPT_CMP = 0x04;
     final static public byte YSM_DB_YUBIKEY_AEAD_STORE = 0x05;
+    final static public byte YSM_AES_ECB_BLOCK_ENCRYPT = 0x0d;
+    final static public byte YSM_AES_ECB_BLOCK_DECRYPT = 0x0e;
+    final static public byte YSM_AES_ECB_BLOCK_DECRYPT_CMP = 0x0f;
     final static public byte YSM_HMAC_SHA1_GENERATE = 0x10;
     final static public byte YSM_BUFFER_LOAD = 0x20;
     final static public byte YSM_BUFFER_RANDOM_LOAD = 0x21;
@@ -69,6 +73,9 @@ public class Defines {
         put(0x03, "YSM_RANDOM_AEAD_GENERATE");
         put(0x04, "YSM_AEAD_DECRYPT_CMP");
         put(0x05, "YSM_DB_YUBIKEY_AEAD_STORE");
+        put(0x0d, "YSM_AES_ECB_BLOCK_ENCRYPT");
+        put(0x0e, "YSM_AES_ECB_BLOCK_DECRYPT");
+        put(0x0f, "YSM_AES_ECB_BLOCK_DECRYPT_CMP");
         put(0x10, "YSM_HMAC_SHA1_GENERATE");
         put(0x20, "YSM_BUFFER_LOAD");
         put(0x21, "YSM_BUFFER_RANDOM_LOAD");

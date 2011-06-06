@@ -48,7 +48,7 @@ public class AEADCmd {
         byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), Utils.addLengthToData(newdata));
         byte[] result = CommandHandler.execute(device, Defines.YSM_AEAD_GENERATE, cmdBuffer, true);
 
-        return parseResult(result, nonce, keyHandle);
+        return parseResult(result, nonce, keyHandle, Defines.YSM_AEAD_GENERATE);
     }
 
     /**
@@ -70,7 +70,7 @@ public class AEADCmd {
         byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), len);
         byte[] result = CommandHandler.execute(device, Defines.YSM_RANDOM_AEAD_GENERATE, cmdBuffer, true);
 
-        return parseResult(result, nonce, keyHandle);
+        return parseResult(result, nonce, keyHandle, Defines.YSM_RANDOM_AEAD_GENERATE);
     }
 
     /**
@@ -93,7 +93,7 @@ public class AEADCmd {
         byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle));
         byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_AEAD_GENERATE, cmdBuffer, true);
 
-        return parseResult(result, nonce, keyHandle);
+        return parseResult(result, nonce, keyHandle, Defines.YSM_BUFFER_AEAD_GENERATE);
     }
 
     /**
@@ -127,11 +127,12 @@ public class AEADCmd {
      * @param data the data from the YubiHSM
      * @param nonce the original nonce
      * @param keyHandle the key used to generate AEAD
+     * @param command the YubiHSM command executed
      * @return a hash map with the AEAD and nonce
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    private static Map<String, String> parseResult(byte[] data, String nonce, int keyHandle) throws YubiHSMCommandFailedException, YubiHSMErrorException {
+    private static Map<String, String> parseResult(byte[] data, String nonce, int keyHandle, byte command) throws YubiHSMCommandFailedException, YubiHSMErrorException {
         Map<String, String> result = new HashMap<String, String>();
 
         if (data[10] == Defines.YSM_STATUS_OK) {
@@ -141,7 +142,7 @@ public class AEADCmd {
                                 Utils.byteArrayToHex(Utils.rangeOfByteArray(data, 0, Defines.YSM_AEAD_NONCE_SIZE)), nonce));
             result.put("aead", Utils.byteArrayToHex(aead));
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_AEAD_GENERATE) + " failed: " + Defines.getCommandStatus(data[10]));
+            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(command) + " failed: " + Defines.getCommandStatus(data[10]));
         }
 
         return result;

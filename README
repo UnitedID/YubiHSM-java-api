@@ -7,3 +7,21 @@ Requirements:
 - RXTX, a native lib providing serial and parallel communication for the Java Development Toolkit (JDK),
   http://rxtx.qbang.org/wiki/index.php/Main_Page
 
+
+
+How to build
+------------
+
+$ mvn package
+
+to skip tests (tests require a YubiHSM configured in 'debug' mode):
+
+$ mvn -Dmaven.test.skip=true package
+
+
+Usage
+-----
+
+Build the javadoc to get the API documentation.
+
+$ mvn javadoc:javadoc

@@ -43,6 +43,7 @@ public class DeviceHandler {
     /** Constructor */
     DeviceHandler(String deviceName, int timeout) {
         try {
+            System.setProperty("gnu.io.rxtx.SerialPorts", deviceName); // Fix an issue for people running debian / ubuntu
             CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(deviceName);
             device = (SerialPort) portId.open("YHSM", 1);
             device.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
@@ -102,7 +103,7 @@ public class DeviceHandler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         return true;

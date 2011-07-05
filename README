@@ -25,3 +25,17 @@ Usage
 Build the javadoc to get the API documentation.
 
 $ mvn javadoc:javadoc
+
+
+Code example
+------------
+
+int timeout = 1; // Serial read timeout in seconds (not fully implemented yet)
+int keyHandle = 12337; // The key to use in the YubiHSM (0x3031)
+String mySecret = "qwerty";
+
+// Instance of YubiHSM
+YubiHSM hsm = new YubiHSM("/dev/ttyACM0", timeout);
+
+// Generate HmacSHA1 for mySecret
+String sha1 = hsm.generateHMACSHA1(mySecret, keyHandle, true, false).get("hash");

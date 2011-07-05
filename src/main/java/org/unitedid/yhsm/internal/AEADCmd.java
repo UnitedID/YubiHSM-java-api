@@ -84,7 +84,7 @@ public class AEADCmd {
      * @param nonce the nonce
      * @param keyHandle the key to use
      * @return a hash map with the AEAD and nonce
-     * @throws YubiHSMInputException argmuent exceptions
+     * @throws YubiHSMInputException argument exceptions
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
@@ -111,9 +111,11 @@ public class AEADCmd {
      * @throws YubiHSMErrorException error exception
      */
     public static boolean validateAEAD(DeviceHandler device, String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        byte[] aeadBA = Utils.validateByteArray("aead", Utils.hexToByteArray(aead), Defines.YSM_MAX_KEY_SIZE + Defines.YSM_AEAD_MAC_SIZE, 0, 0);
+        byte[] aeadBA = Utils.hexToByteArray(aead);
         byte[] plainBA = Utils.validateByteArray("plaintext", plaintext.getBytes(), 0, aeadBA.length - Defines.YSM_AEAD_MAC_SIZE, YubiHSM.minHashLength);
         byte[] plainAndAead = Utils.concatAllArrays(plainBA, aeadBA);
+        if (plainAndAead.length > (Defines.YSM_MAX_PKT_SIZE - 0x10))
+            throw new YubiHSMInputException("Plaintext+aead too long");
         byte[] nonceBA = Utils.validateNonce(Utils.hexToByteArray(nonce), true);
         byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), Utils.addLengthToData(plainAndAead));
         byte[] result = CommandHandler.execute(device, Defines.YSM_AEAD_DECRYPT_CMP, cmdBuffer, true);

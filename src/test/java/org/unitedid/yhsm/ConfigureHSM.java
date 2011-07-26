@@ -39,7 +39,7 @@ public class ConfigureHSM extends SetupCommon {
     @Test
     public void testConfigureHSM() throws Exception {
         hsm.exitMonitorDebugMode();
-        System.out.println(runCommand("hsm ffffffff\r\r\ryes", true));
+        System.out.println(runCommand("hsm ffffffff\r\r2f6af1e667456bb94528e7987344515b\ryes", true));
         System.out.println(runCommand("sysinfo", true));
         hsm.drainData();
         addKeys();

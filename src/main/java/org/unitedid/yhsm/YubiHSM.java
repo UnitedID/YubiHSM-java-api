@@ -287,6 +287,19 @@ public class YubiHSM  {
     }
 
     /**
+     * Unlock the YubiHSM key storage using the HSM password.
+     *
+     * @param password the password in hex format (see output of automatic password generation during HSM configuration)
+     * @return true if unlock was successful, otherwise an YubiHSMCommandFailedException is thrown
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException argument exception
+     */
+    public boolean keyStorageUnlock(String password) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return KeyStorageUnlockCmd.execute(deviceHandler, password);
+    }
+
+    /**
      * Drain all remaining output from the YubiHSM, used for debugging.
      *
      * @return true if successful, false otherwise.

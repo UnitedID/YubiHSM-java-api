@@ -22,7 +22,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({EchoCmdTest.class,
+@Suite.SuiteClasses({KeyStorageUnlockTest.class,
+        EchoCmdTest.class,
         BufferCmdTest.class,
         DeviceHandlerTest.class,
         AEADCmdTest.class,

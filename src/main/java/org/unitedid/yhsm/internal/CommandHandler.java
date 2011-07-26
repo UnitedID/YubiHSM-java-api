@@ -40,7 +40,7 @@ public class CommandHandler {
         device.write(Utils.concatAllArrays(cmdBuffer, data));
 
         try {
-            Thread.sleep(20); //TODO: Implement event listener
+            Thread.sleep(40); //TODO: Implement event listener
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

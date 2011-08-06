@@ -24,7 +24,7 @@
 
     <groupId>org.unitedid</groupId>
     <artifactId>YubiHSM</artifactId>
-    <version>0.6</version>
+    <version>0.7-dev</version>
     <packaging>jar</packaging>
     <inceptionYear>2011</inceptionYear>
     <organization>

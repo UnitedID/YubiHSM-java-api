@@ -195,6 +195,21 @@ public class YubiHSM  {
     }
 
     /**
+     * Load the content of an AEAD into the phantom key handle 0xffffffff.
+     *
+     * @param nonce the nonce
+     * @param keyHandle the key handle with permission to use YSM_TEMP_KEY_LOAD
+     * @param aead the AEAD to load into the phantom key handle
+     * @return returns true if the AEAD was successfully loaded
+     * @throws YubiHSMCommandFailedException command fail exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException argument exceptions
+     */
+    public boolean loadTemporaryKey(String nonce, int keyHandle, String aead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return LoadTemporaryKeyCmd.execute(deviceHandler, nonce, keyHandle, aead);
+    }
+
+    /**
      * Generate HMAC SHA1 using a key handle in the YubiHSM.
      *
      * @param data the data used to generate the SHA1
@@ -347,6 +362,25 @@ public class YubiHSM  {
      */
     public boolean keyStorageUnlock(String password) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return KeyStorageUnlockCmd.execute(deviceHandler, password);
+    }
+
+    /**
+     * Validate OATH-HOTP OTP by a token whose seed is available to the YubiHSM through an AEAD.
+     *
+     * @param hsm the current hsm object
+     * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
+     * @param nonce the nonce used to generate the AEAD
+     * @param aead the AEAD based on the token seed
+     * @param counter the current OTP counter
+     * @param otp the token OTP
+     * @param lookAhead the number of iterations to run to find the current users OTP
+     * @return return next counter value on success, 0 if the OTP couldn't be validated
+     * @throws YubiHSMInputException argument exceptions
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     */
+    public int oathHOTPValidateOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return OathHOTPCmd.validateOTP(hsm, keyHandle, nonce, aead, counter, otp, lookAhead);
     }
 
     /**

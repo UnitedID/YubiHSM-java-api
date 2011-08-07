@@ -29,7 +29,9 @@ import org.junit.runners.Suite;
         AEADCmdTest.class,
         HMACCmdTest.class,
         SystemInfoCmdTest.class,
-        AESECBCmdTest.class})
+        AESECBCmdTest.class,
+        LoadTemporaryKeyCmdTest.class,
+        OathHOTPCmdTest.class})
 
 public class InternalTestSuite {
 

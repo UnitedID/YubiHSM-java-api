@@ -43,8 +43,8 @@ import java.util.Map;
      * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
      * @throws YubiHSMInputException if an argument does not validate
      */
-    public static Map<String, String> generateHMACSHA1(DeviceHandler deviceHandler, String data, int keyHandle, byte flags, boolean last, boolean toBuffer) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        byte [] dataBA = Utils.validateByteArray("data", data.getBytes(), Defines.YSM_MAX_PKT_SIZE - 6, 0, 0);
+    public static Map<String, String> generateHMACSHA1(DeviceHandler deviceHandler, byte[] data, int keyHandle, byte flags, boolean last, boolean toBuffer) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        byte [] dataBA = Utils.validateByteArray("data", data, Defines.YSM_MAX_PKT_SIZE - 6, 0, 0);
 
         if (flags == 0) {
             flags = Defines.YSM_HMAC_SHA1_RESET;
@@ -76,7 +76,7 @@ import java.util.Map;
      * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
      * @throws YubiHSMInputException if an argument does not validate
      */
-    public static Map<String, String> next(DeviceHandler deviceHandler, String data, int keyHandle, boolean last, boolean toBuffer) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+    public static Map<String, String> next(DeviceHandler deviceHandler, byte[] data, int keyHandle, boolean last, boolean toBuffer) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         byte flags;
         if (last) {
             flags = Defines.YSM_HMAC_SHA1_FINAL;
@@ -88,7 +88,7 @@ import java.util.Map;
         }
 
         byte[] flagsBA = { flags };
-        byte[] cmdBuffer = Utils.concatAllArrays(Utils.leIntToBA(keyHandle), flagsBA, Utils.addLengthToData(data.getBytes()));
+        byte[] cmdBuffer = Utils.concatAllArrays(Utils.leIntToBA(keyHandle), flagsBA, Utils.addLengthToData(data));
         byte[] result = CommandHandler.execute(deviceHandler, Defines.YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
 
         return parseResult(result, keyHandle, last);

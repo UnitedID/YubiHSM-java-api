@@ -92,7 +92,15 @@ public class Utils {
         return result;
     }
 
-    public static byte[] hexToByteArray(String hex) {
+    public static byte[] hexToByteArray(String hex) throws YubiHSMInputException {
+        if (hex.length() % 2 != 0) {
+            throw new YubiHSMInputException("Invalid hex string (" + hex + ")!");
+        }
+        for (int i = 0; i < hex.length(); i++) {
+            if (Character.digit(hex.charAt(i), 16) < 0) {
+                throw new YubiHSMInputException("Invalid hex string (" + hex + ")!");
+            }
+        }
         byte data[] = new byte[hex.length()/2];
         for(int i=0; i < hex.length(); i+=2) {
             data[i/2] = (Integer.decode("0x" + hex.charAt(i) + hex.charAt(i+1))).byteValue();

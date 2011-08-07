@@ -36,17 +36,40 @@ public class CommandHandler {
             cmdBuffer = new byte[]{command};
         }
 
-        log.info("CMD BUFFER: {}", Utils.byteArrayToHex(Utils.concatAllArrays(cmdBuffer, data)));
+        log.debug("CMD BUFFER: {}", Utils.byteArrayToHex(Utils.concatAllArrays(cmdBuffer, data)));
         device.write(Utils.concatAllArrays(cmdBuffer, data));
 
+
+        if (!readResponse) {
+            try {
+                Thread.sleep(10); // We just sleep for safety since we cant check if we got any output
+                return null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
-            Thread.sleep(40); //TODO: Implement event listener
+            int timeout = (int) device.getTimeout() * 1000; // Need milliseconds
+            int sleptTime = 0;
+            if (log.isDebugEnabled()) {
+                log.debug("CommandHandler (" + Defines.getCommandString(command) + ") timeout set to: " + timeout);
+            }
+            while (sleptTime <= timeout) {
+                Thread.sleep(1);
+                sleptTime += 1;
+                if (device.available() > 0) {
+                    break;
+                }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("CommandHandler slept for: " + sleptTime + " ms");
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (!readResponse) {
-            return null;
-        }
+
+
         return readDevice(device, command);
     }
 
@@ -62,7 +85,7 @@ public class CommandHandler {
         }
 
         if ((result[1] & Defines.YSM_RESPONSE) != 0) {
-            log.info("Got response from ({}) {}", result[1], Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
+            log.debug("Got response from ({}) {}", result[1], Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
         }
 
         if (result[1] == (command | Defines.YSM_RESPONSE)) {

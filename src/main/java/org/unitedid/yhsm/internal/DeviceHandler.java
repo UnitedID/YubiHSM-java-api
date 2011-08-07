@@ -40,8 +40,15 @@ public class DeviceHandler {
     private int readBytes = 0;
     private int writtenBytes = 0;
 
-    /** Constructor */
-    DeviceHandler(String deviceName, int timeout) {
+    private float timeout;
+
+    /**
+     * Constructor
+     *
+     * @param deviceName the YubiHSM device name
+     * @param timeout the timeout in seconds
+     */
+    DeviceHandler(String deviceName, float timeout) {
         try {
             System.setProperty("gnu.io.rxtx.SerialPorts", deviceName); // Fix an issue for people running debian / ubuntu
             CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(deviceName);
@@ -50,6 +57,7 @@ public class DeviceHandler {
             device.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             writeStream = device.getOutputStream();
             readStream = device.getInputStream();
+            this.timeout = timeout;
         } catch (NoSuchPortException e) {
             e.printStackTrace();
         } catch (PortInUseException e ) {
@@ -111,6 +119,10 @@ public class DeviceHandler {
 
     public void flush() throws IOException {
         writeStream.flush();
+    }
+
+    public float getTimeout() {
+        return timeout;
     }
 
     public Object clone() throws CloneNotSupportedException

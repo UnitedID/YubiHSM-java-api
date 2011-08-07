@@ -32,7 +32,7 @@ public class DeviceHandlerFactory {
 
     private DeviceHandlerFactory() {}
 
-    public static DeviceHandler get(String device, int timeout) {
+    public static DeviceHandler get(String device, float timeout) {
         synchronized (deviceHandlerFactoryMap) {
             DeviceHandler deviceHandler = deviceHandlerFactoryMap.get(device);
             if (deviceHandler == null) {

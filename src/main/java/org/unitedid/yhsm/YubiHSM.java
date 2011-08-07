@@ -43,7 +43,7 @@ public class YubiHSM  {
      * @param timeout the read timeout (not implemented yet)
      * @throws YubiHSMErrorException if the YubiHSM reset command fail
      */
-    public YubiHSM(String device, int timeout) throws YubiHSMErrorException {
+    public YubiHSM(String device, float timeout) throws YubiHSMErrorException {
         deviceHandler = DeviceHandlerFactory.get(device, timeout);
         CommandHandler.reset(deviceHandler);
     }

@@ -36,7 +36,8 @@ public class KeyStorageUnlockCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     public static boolean execute(DeviceHandler device, String password) throws YubiHSMErrorException, YubiHSMInputException, YubiHSMCommandFailedException {
-        byte[] passwordBA = Utils.validateByteArray("password", Utils.hexToByteArray(password), Defines.YSM_BLOCK_SIZE, 0, Defines.YSM_BLOCK_SIZE);
+        byte[] pw = Utils.hexToByteArray(password);
+        byte[] passwordBA = Utils.validateByteArray("password", pw, Defines.YSM_BLOCK_SIZE, 0, Defines.YSM_BLOCK_SIZE);
         return parseResult(CommandHandler.execute(device, Defines.YSM_KEY_STORAGE_UNLOCK, passwordBA, true));
     }
 
@@ -50,6 +51,8 @@ public class KeyStorageUnlockCmd {
     private static boolean parseResult(byte[] result) throws YubiHSMCommandFailedException {
         if (result[0] == Defines.YSM_STATUS_OK) {
             return true;
+        } else if (result[0] == Defines.YSM_KEY_STORAGE_LOCKED) {
+            return false;
         } else {
             throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_KEY_STORAGE_UNLOCK) + " failed: " + Defines.getCommandStatus(result[0]));
         }

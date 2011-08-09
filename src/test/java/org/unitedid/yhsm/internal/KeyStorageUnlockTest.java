@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.unitedid.yhsm.SetupCommon;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class KeyStorageUnlockTest extends SetupCommon {
@@ -44,8 +45,7 @@ public class KeyStorageUnlockTest extends SetupCommon {
 
     @Test
     public void failedUnlockHsm() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        thrown.expect(YubiHSMCommandFailedException.class);
-        hsm.keyStorageUnlock("aabb");
+        assertFalse(hsm.keyStorageUnlock("1111"));
     }
 
     @Test

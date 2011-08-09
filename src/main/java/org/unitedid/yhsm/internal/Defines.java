@@ -118,6 +118,7 @@ public class Defines {
     final static public byte YSM_STATUS_OK = (byte) 0x80;
     final static public byte YSM_RESPONSE = (byte) 0x80;
     final static public byte YSM_MISMATCH = (byte) 0x8b;
+    final static public byte YSM_KEY_STORAGE_LOCKED = (byte) 0x8a;
 
 
     final public static String getCommandString(byte b) {

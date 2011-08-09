@@ -1,10 +1,8 @@
 
 This is a java library (API) for the YubiHSM, http://yubico.com/yubihsm
 
-DON'T USE THIS CODE IN PRODUCTION! ITS STILL WORK IN PROGRESS.
-
 Requirements:
-- RXTX, a native lib providing serial and parallel communication for the Java Development Toolkit (JDK),
+- RXTX, a native library providing serial and parallel communication for the Java Development Toolkit (JDK),
   http://rxtx.qbang.org/wiki/index.php/Main_Page
 
 
@@ -30,7 +28,7 @@ $ mvn javadoc:javadoc
 Code example
 ------------
 
-int timeout = 1; // Serial read timeout in seconds (not fully implemented yet)
+float timeout = 0.5; // HSM read timeout in seconds (How long to wait for the response from the current command)
 int keyHandle = 12337; // The key to use in the YubiHSM (0x3031)
 String mySecret = "qwerty";
 

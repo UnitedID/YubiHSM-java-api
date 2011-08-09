@@ -18,23 +18,33 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitedid.yhsm.SetupCommon;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({KeyStorageUnlockTest.class,
-        EchoCmdTest.class,
-        BufferCmdTest.class,
-        DeviceHandlerTest.class,
-        AEADCmdTest.class,
-        HMACCmdTest.class,
-        SystemInfoCmdTest.class,
-        AESECBCmdTest.class,
-        LoadTemporaryKeyCmdTest.class,
-        OathHOTPCmdTest.class,
-        NonceGetCmdTest.class,
-        RandomCmdTest.class})
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
-public class InternalTestSuite {
+public class RandomCmdTest extends SetupCommon {
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+    @Test
+    public void testRandomness() throws YubiHSMErrorException, YubiHSMInputException {
+        byte[] random1 = hsm.getRandom(12);
+        byte[] random2 = hsm.getRandom(12);
+
+        assertNotSame(random1, random2);
+        assertEquals(12, random1.length);
+    }
 
 }

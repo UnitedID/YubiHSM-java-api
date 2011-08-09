@@ -403,6 +403,18 @@ public class YubiHSM  {
     }
 
     /**
+     * Tell the YubiHSM to generate a number of random bytes.
+     *
+     * @param bytes the number of bytes to generate
+     * @return returns a byte array of random bytes
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException invalid argument exception
+     */
+    public byte[] getRandom(int bytes) throws YubiHSMErrorException, YubiHSMInputException {
+        return RandomCmd.execute(deviceHandler, bytes);
+    }
+
+    /**
      * Drain all remaining output from the YubiHSM, used for debugging.
      *
      * @return true if successful, false otherwise.

@@ -46,7 +46,7 @@ public class OathHOTPCmd {
      * @throws YubiHSMErrorException error exception
      */
     public static int validateOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        int otpLength = String.valueOf(otp).trim().length();
+        int otpLength = otp.trim().length();
         if (otpLength < 6 || otpLength > 8) {
             throw new YubiHSMInputException("OTP not of required length, should be between 6-8 digits long but was " + otpLength);
         }
@@ -75,9 +75,7 @@ public class OathHOTPCmd {
      */
     public static String truncate(String hmac, int otpLength) throws YubiHSMInputException {
         byte[] hmacBA = Utils.hexToByteArray(hmac);
-        if (hmacBA.length != 20) {
-            throw new YubiHSMInputException("HMAC not of required length. Expected 20 bytes but got " + hmacBA.length);
-        }
+        Utils.validateByteArray("hmacBA", hmacBA, 0, 20, 0);
 
         int offset = hmacBA[19] & 0xf;
         int binCode = (hmacBA[offset] & 0x7f) << 24 | (hmacBA[offset+1] & 0xff) << 16 | (hmacBA[offset+2] & 0xff) << 8 | (hmacBA[offset+3] & 0xff);

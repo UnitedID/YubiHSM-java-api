@@ -20,7 +20,9 @@ package org.unitedid.yhsm.internal;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.Utils;
 
@@ -36,6 +38,9 @@ public class OathHOTPCmdTest extends SetupCommon {
     private String nonce = "f1f2f3f4f5f6";
     private String aead;
     private int keyHandle = 8192;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -84,6 +89,11 @@ public class OathHOTPCmdTest extends SetupCommon {
         }
     }
 
+    @Test
+    public void testOathHotpTruncateHMACLength() throws YubiHSMInputException {
+        thrown.expect(YubiHSMInputException.class);
+        OathHOTPCmd.truncate("cccccccccccccccccccccccccccccccccccccccccc", 6);
+    }
 }
 
 class OathHotpValueMap {

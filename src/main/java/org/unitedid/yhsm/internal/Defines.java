@@ -63,6 +63,7 @@ public class Defines {
     final static public byte YSM_TEMP_KEY_LOAD = 0x11;
     final static public byte YSM_BUFFER_LOAD = 0x20;
     final static public byte YSM_BUFFER_RANDOM_LOAD = 0x21;
+    final static public byte YSM_NONCE_GET = 0x22;
     final static public byte YSM_ECHO = 0x23;
     final static public byte YSM_SYSTEM_INFO_QUERY = 0x26;
     final static public byte YSM_KEY_STORAGE_UNLOCK = 0x27;
@@ -88,6 +89,7 @@ public class Defines {
         put(0x11, "YSM_TEMP_KEY_LOAD");
         put(0x20, "YSM_BUFFER_LOAD");
         put(0x21, "YSM_BUFFER_RANDOM_LOAD");
+        put(0x22, "YSM_NONCE_GET");
         put(0x23, "YSM_ECHO");
         put(0x26, "YSM_SYSTEM_INFO_QUERY");
         put(0x27, "YSM_KEY_STORAGE_UNLOCK");

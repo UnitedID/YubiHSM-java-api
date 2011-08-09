@@ -18,6 +18,7 @@
 
 package org.unitedid.yhsm.utility;
 
+import com.sun.corba.se.spi.monitoring.StatisticMonitoredAttribute;
 import org.unitedid.yhsm.internal.Defines;
 import org.unitedid.yhsm.internal.YubiHSMErrorException;
 import org.unitedid.yhsm.internal.YubiHSMInputException;
@@ -69,11 +70,26 @@ public class Utils {
         return buffer.array();
     }
 
+    public static byte[] leShortToByteArray(short value) {
+        ByteBuffer buffer = ByteBuffer.allocate(2);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.putShort(value);
+
+        return buffer.array();
+    }
+
     public static int leBAToBeInt(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
 
         return buffer.getInt();
     }
+
+    public static int leBAToBeShort(byte[] data) {
+        ByteBuffer buffer = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
+
+        return buffer.getShort();
+    }
+
 
     public static byte[] rangeOfByteArray(byte[] data, int offset, int length) {
         byte[] buffer = new byte[length];

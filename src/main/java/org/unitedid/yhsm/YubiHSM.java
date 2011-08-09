@@ -383,6 +383,20 @@ public class YubiHSM  {
         return OathHOTPCmd.validateOTP(hsm, keyHandle, nonce, aead, counter, otp, lookAhead);
     }
 
+
+    /**
+     * Get a nonce from the YubiHSM. Increment the nonce by the number supplied as increment.
+     * To get the current nonce send 0 as increment.
+     *
+     * @param increment the increment (short)
+     * @return returns a Nonce class
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMCommandFailedException command failed exception
+     */
+    public Nonce getNonce(short increment) throws YubiHSMErrorException, YubiHSMCommandFailedException {
+        return NonceGetCmd.execute(deviceHandler, increment);
+    }
+
     /**
      * Drain all remaining output from the YubiHSM, used for debugging.
      *

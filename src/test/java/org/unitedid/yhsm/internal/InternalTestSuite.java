@@ -31,7 +31,8 @@ import org.junit.runners.Suite;
         SystemInfoCmdTest.class,
         AESECBCmdTest.class,
         LoadTemporaryKeyCmdTest.class,
-        OathHOTPCmdTest.class})
+        OathHOTPCmdTest.class,
+        NonceGetCmdTest.class})
 
 public class InternalTestSuite {
 

@@ -20,17 +20,12 @@ package org.unitedid.yhsm.internal;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.unitedid.yhsm.SetupCommon;
 
 import static junit.framework.Assert.assertEquals;
 
 public class NonceGetCmdTest extends SetupCommon {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -43,7 +38,7 @@ public class NonceGetCmdTest extends SetupCommon {
     }
 
     @Test
-    public void testNonceGet() throws YubiHSMErrorException {
+    public void testNonceGet() throws YubiHSMErrorException, YubiHSMCommandFailedException {
         Nonce nonce1 = hsm.getNonce((short) 1);
         Nonce nonce2 = hsm.getNonce((short) 1);
         assertEquals(nonce1.getNonceInt() + 1, nonce2.getNonceInt());

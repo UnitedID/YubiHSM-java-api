@@ -52,9 +52,9 @@ public class CommandHandler {
         try {
             int timeout = (int) device.getTimeout() * 1000; // Need milliseconds
             int sleptTime = 0;
-            if (log.isDebugEnabled()) {
-                log.debug("CommandHandler (" + Defines.getCommandString(command) + ") timeout set to: " + timeout);
-            }
+
+            log.debug("CommandHandler (" + Defines.getCommandString(command) + ") timeout set to: " + timeout);
+
             while (sleptTime <= timeout) {
                 Thread.sleep(1);
                 sleptTime += 1;
@@ -62,9 +62,7 @@ public class CommandHandler {
                     break;
                 }
             }
-            if (log.isDebugEnabled()) {
-                log.debug("CommandHandler slept for: " + sleptTime + " ms");
-            }
+            log.debug("CommandHandler slept for: " + sleptTime + " ms");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

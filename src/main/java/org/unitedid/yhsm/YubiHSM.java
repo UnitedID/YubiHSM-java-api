@@ -45,7 +45,7 @@ public class YubiHSM  {
      * Constructor
      *
      * @param device the YubiHSM device name ie /dev/ttyACM0
-     * @param timeout the read timeout (not implemented yet)
+     * @param timeout the command read timeout
      * @throws YubiHSMErrorException if the YubiHSM reset command fail
      */
     public YubiHSM(String device, float timeout) throws YubiHSMErrorException {
@@ -412,6 +412,20 @@ public class YubiHSM  {
      */
     public byte[] getRandom(int bytes) throws YubiHSMErrorException, YubiHSMInputException {
         return RandomCmd.execute(deviceHandler, bytes);
+    }
+
+    /**
+     *  Provide YubiHSM DRBG_CTR with a new seed.
+     *  The seed is a string of a length 32.
+     *
+     * @param seed the seed string with a length of 32
+     * @return return true on success, otherwise a YubiHSMCommandFailedException is thrown
+     * @throws YubiHSMInputException argument exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMCommandFailedException command failed exception
+     */
+    public boolean randomReseed(String seed) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return RandomReseedCmd.execute(deviceHandler, seed);
     }
 
     /**

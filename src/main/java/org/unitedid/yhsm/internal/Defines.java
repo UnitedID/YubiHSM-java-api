@@ -38,6 +38,7 @@ public class Defines {
     final static public int YSM_BLOCK_SIZE = 16;
     final static public int UID_SIZE = 6;
     final static public int KEY_SIZE = 16;
+    final static public int YSM_CTR_DRBG_SEED_SIZE = 32;
     final static public int YSM_YUBIKEY_AEAD_SIZE = KEY_SIZE + UID_SIZE + YSM_AEAD_MAC_SIZE;
 
     /**

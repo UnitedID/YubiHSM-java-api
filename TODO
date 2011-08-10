@@ -1,4 +1,7 @@
 ToDo list
-- Implement all YubiHSM functions
-- Add junit tests for all vital functions
-- Add logging where necessary
+
+Commands left to implement:
+YSM_DB_YUBIKEY_AEAD_STORE
+YSM_AEAD_YUBIKEY_OTP_DECODE
+YSM_DB_OTP_VALIDATE
+

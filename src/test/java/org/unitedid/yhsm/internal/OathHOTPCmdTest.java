@@ -85,7 +85,7 @@ public class OathHOTPCmdTest extends SetupCommon {
         testCodeList.add(new OathHotpCodeMap(31, 30, "026920", 1));
 
         for (OathHotpCodeMap o : testCodeList) {
-            assertEquals(o.getExpectedCounter(), hsm.oathHOTPValidateOTP(hsm, keyHandle, nonce, aead, o.getCounter(), o.getOtp(), o.getLookAhead()));
+            assertEquals(o.getExpectedCounter(), hsm.validateOathHOTP(hsm, keyHandle, nonce, aead, o.getCounter(), o.getOtp(), o.getLookAhead()));
         }
     }
 

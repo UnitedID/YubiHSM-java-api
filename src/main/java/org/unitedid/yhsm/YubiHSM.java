@@ -384,7 +384,7 @@ public class YubiHSM  {
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    public int oathHOTPValidateOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+    public int validateOathHOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return OathHOTPCmd.validateOTP(hsm, keyHandle, nonce, aead, counter, otp, lookAhead);
     }
 

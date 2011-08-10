@@ -57,6 +57,8 @@ public class Defines {
     final static public byte YSM_RANDOM_AEAD_GENERATE = 0x03;
     final static public byte YSM_AEAD_DECRYPT_CMP = 0x04;
     final static public byte YSM_DB_YUBIKEY_AEAD_STORE = 0x05;
+    final static public byte YSM_AEAD_YUBIKEY_OTP_DECODE = 0x06;
+    final static public byte YSM_DB_OTP_VALIDATE = 0x07;
     final static public byte YSM_AES_ECB_BLOCK_ENCRYPT = 0x0d;
     final static public byte YSM_AES_ECB_BLOCK_DECRYPT = 0x0e;
     final static public byte YSM_AES_ECB_BLOCK_DECRYPT_CMP = 0x0f;
@@ -85,6 +87,8 @@ public class Defines {
         put(0x03, "YSM_RANDOM_AEAD_GENERATE");
         put(0x04, "YSM_AEAD_DECRYPT_CMP");
         put(0x05, "YSM_DB_YUBIKEY_AEAD_STORE");
+        put(0x06, "YSM_AEAD_YUBIKEY_OTP_DECODE");
+        put(0x07, "YSM_DB_OTP_VALIDATE");
         put(0x0d, "YSM_AES_ECB_BLOCK_ENCRYPT");
         put(0x0e, "YSM_AES_ECB_BLOCK_DECRYPT");
         put(0x0f, "YSM_AES_ECB_BLOCK_DECRYPT_CMP");

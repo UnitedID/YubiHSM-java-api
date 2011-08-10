@@ -33,7 +33,8 @@ import org.junit.runners.Suite;
         LoadTemporaryKeyCmdTest.class,
         OathHOTPCmdTest.class,
         NonceGetCmdTest.class,
-        RandomCmdTest.class})
+        RandomCmdTest.class,
+        RandomReseedCmdTest.class})
 
 public class InternalTestSuite {
 

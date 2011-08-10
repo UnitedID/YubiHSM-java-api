@@ -18,7 +18,6 @@
 
 package org.unitedid.yhsm.utility;
 
-import com.sun.corba.se.spi.monitoring.StatisticMonitoredAttribute;
 import org.unitedid.yhsm.internal.Defines;
 import org.unitedid.yhsm.internal.YubiHSMErrorException;
 import org.unitedid.yhsm.internal.YubiHSMInputException;
@@ -182,7 +181,7 @@ public class Utils {
                 (byte)((value >> 24) & 0xff),
                 (byte)((value >> 16) & 0xff),
                 (byte)((value >> 8 ) & 0xff),
-                (byte)((value >> 0) & 0xff),
+                (byte)(value & 0xff),
         };
     }
 

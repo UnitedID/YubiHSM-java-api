@@ -95,4 +95,52 @@ public class UtilsTest {
         String data = "1234567";
         Utils.validateNonce(data.getBytes(), false);
     }
+
+    @Test
+    public void testLeShortToByteArray() {
+        byte[] expected = {0x00, 0x20};
+        assertArrayEquals(expected, Utils.leShortToByteArray((short) 8192));
+    }
+
+    @Test
+    public void testLeBAToBeShort() {
+        byte[] data = {0x00, 0x20};
+        assertEquals(8192, Utils.leBAToBeShort(data));
+    }
+
+    @Test
+    public void testHexToByteArrayIncompleteHex() throws YubiHSMInputException {
+        thrown.expect(YubiHSMInputException.class);
+        thrown.expectMessage("Invalid hex string (aac)!");
+        Utils.hexToByteArray("aac");
+    }
+
+    @Test
+    public void testHexToByteArrayInvalidHexValue() throws YubiHSMInputException {
+        thrown.expect(YubiHSMInputException.class);
+        thrown.expectMessage("Invalid hex string (aaxx)!");
+        Utils.hexToByteArray("aaxx");
+    }
+
+    @Test
+    public void testValidateByteArrayMaxLength() throws YubiHSMInputException {
+        thrown.expect(YubiHSMInputException.class);
+        thrown.expectMessage("Argument 'test' is too long, expected max 10 but got 12");
+        String data = "Test";
+        Utils.validateByteArray("test", data.getBytes(), 10, 0, 12);
+    }
+
+    @Test
+    public void testValidateByteArrayExactLength() throws YubiHSMInputException {
+        thrown.expect(YubiHSMInputException.class);
+        thrown.expectMessage("Wrong size of argument 'test', expected 10 but got 12");
+        String data = "Test";
+        Utils.validateByteArray("test", data.getBytes(), 0, 10, 12);
+    }
+
+    @Test
+    public void testLongToByteArray() {
+        byte[] expected = {0x00,0x00,0x00,0x00,0x00,0x00,0x20,0x00};
+        assertArrayEquals(expected, Utils.longToByteArray((long) 8192));
+    }
 }

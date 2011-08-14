@@ -39,21 +39,19 @@ public class CommandHandler {
         log.debug("CMD BUFFER: {}", Utils.byteArrayToHex(Utils.concatAllArrays(cmdBuffer, data)));
         device.write(Utils.concatAllArrays(cmdBuffer, data));
 
-
-        if (!readResponse) {
-            try {
+        try {
+            if (!readResponse) {
                 Thread.sleep(10); // We just sleep for safety since we cant check if we got any output
                 return null;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
 
-        try {
-            int timeout = (int) device.getTimeout() * 1000; // Need milliseconds
             int sleptTime = 0;
+            int timeout = 100; // We enforce a default just in case (100 ms)
+            if (device.getTimeout() > 0) {
+                timeout = (int) (device.getTimeout() * 1000); // Need milliseconds
+            }
 
-            log.debug("CommandHandler (" + Defines.getCommandString(command) + ") timeout set to: " + timeout);
+            log.debug("CommandHandler ({}) timeout set to: {} ms ", Defines.getCommandString(command), timeout);
 
             while (sleptTime <= timeout) {
                 Thread.sleep(1);
@@ -62,11 +60,10 @@ public class CommandHandler {
                     break;
                 }
             }
-            log.debug("CommandHandler slept for: " + sleptTime + " ms");
+            log.debug("CommandHandler slept for: {} ms", sleptTime);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
 
         return readDevice(device, command);
     }
@@ -91,7 +88,7 @@ public class CommandHandler {
             return device.read(len);
         } else {
             reset(device);
-            throw new YubiHSMErrorException("YubiHSM responded to the wrong command!");
+            throw new YubiHSMErrorException("YubiHSM responded to the wrong command. Expected " + Defines.getCommandString(command) + " but got " + Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
         }
     }
 

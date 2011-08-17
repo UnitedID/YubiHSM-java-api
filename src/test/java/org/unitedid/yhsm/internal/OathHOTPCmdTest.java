@@ -46,10 +46,8 @@ public class OathHOTPCmdTest extends SetupCommon {
     public void setUp() throws Exception {
         super.setUp();
 
-        byte[] key = Utils.hexToByteArray("3132333435363738393031323334353637383930");
-
-        hsm.loadBufferData(Utils.concatAllArrays(key, Utils.leIntToBA(0x10000)), 0);
-        aead = hsm.generateBufferAEAD(nonce, keyHandle).get("aead");
+        String seed = "3132333435363738393031323334353637383930";
+        aead = hsm.generateOathHotpAEAD(nonce, keyHandle, seed);
         assertTrue(hsm.loadTemporaryKey(nonce, keyHandle, aead));
     }
 

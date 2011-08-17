@@ -133,6 +133,28 @@ public class YubiHSM  {
     }
 
     /**
+     * Generate AEAD block which can be used for OATH-HOTP OTP validation, see <code>validateOathHOTP</code>.
+     *
+     * @param nonce the nonce
+     * @param keyHandle the key handle with permission to generateBufferAEAD
+     * @param tokenSeed the OATH HOTP token seed
+     * @return returns an AEAD
+     * @throws YubiHSMInputException thrown if an argument fail to validate
+     * @throws YubiHSMErrorException thrown if an error have occurred
+     * @throws YubiHSMCommandFailedException thrown if the YubiHSM fail to execute a command
+     */
+    public String generateOathHotpAEAD(String nonce, int keyHandle, String tokenSeed) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
+        if (tokenSeed.length() != 40)
+            throw new YubiHSMInputException("Seed is not of required length, got " + tokenSeed.length() + " but expected 40");
+
+        byte[] seed = Utils.hexToByteArray(tokenSeed);
+        byte[] flag = Utils.leIntToBA(0x10000); // Generate HMAC SHA1 Flag
+        loadBufferData(Utils.concatAllArrays(seed, flag), 0);
+
+        return generateBufferAEAD(nonce, keyHandle).get("aead");
+    }
+
+    /**
      * Validate an AEAD using the YubiHSM, matching it against some known plain text.
      * Matching is done inside the YubiHSM so the decrypted AEAD is never exposed.
      *

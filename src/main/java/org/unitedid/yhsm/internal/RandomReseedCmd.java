@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>RandomReseedCmd</code> implements the random reseed command for the YubiHSM. */
 public class RandomReseedCmd {
@@ -38,8 +39,8 @@ public class RandomReseedCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     public static boolean execute(DeviceHandler device, String seed) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
-        seed = Utils.validateString("seed", seed, 0, Defines.YSM_CTR_DRBG_SEED_SIZE);
-        byte[] result = CommandHandler.execute(device, Defines.YSM_RANDOM_RESEED, seed.getBytes(), true);
+        seed = validateString("seed", seed, 0, YSM_CTR_DRBG_SEED_SIZE);
+        byte[] result = CommandHandler.execute(device, YSM_RANDOM_RESEED, seed.getBytes(), true);
 
         return parseResult(result);
     }
@@ -52,10 +53,10 @@ public class RandomReseedCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     private static boolean parseResult(byte[] data) throws YubiHSMCommandFailedException {
-        if (data[0] == Defines.YSM_STATUS_OK) {
+        if (data[0] == YSM_STATUS_OK) {
             return true;
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_RANDOM_RESEED) + " failed: " + Defines.getCommandStatus(data[0]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_RANDOM_RESEED) + " failed: " + getCommandStatus(data[0]));
         }
     }
 }

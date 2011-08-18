@@ -19,10 +19,13 @@
 package org.unitedid.yhsm.internal;
 
 import org.unitedid.yhsm.YubiHSM;
-import org.unitedid.yhsm.utility.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
+
 
 /** <code>AEADCmd</code> implements AEAD commands for the YubiHSM */
 public class AEADCmd {
@@ -43,12 +46,12 @@ public class AEADCmd {
      * @throws YubiHSMErrorException error exception
      */
     public static Map<String, String> generateAEAD(DeviceHandler device, String nonce, int keyHandle, String data) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        byte[] nonceBA = Utils.validateNonce(Utils.hexToByteArray(nonce), true);
-        byte[] newdata = Utils.validateByteArray("data", data.getBytes(), 0, 0, YubiHSM.minHashLength);
-        byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), Utils.addLengthToData(newdata));
-        byte[] result = CommandHandler.execute(device, Defines.YSM_AEAD_GENERATE, cmdBuffer, true);
+        byte[] nonceBA = validateNonce(hexToByteArray(nonce), true);
+        byte[] newdata = validateByteArray("data", data.getBytes(), 0, 0, YubiHSM.minHashLength);
+        byte[] cmdBuffer = concatAllArrays(nonceBA, leIntToBA(keyHandle), addLengthToData(newdata));
+        byte[] result = CommandHandler.execute(device, YSM_AEAD_GENERATE, cmdBuffer, true);
 
-        return parseResult(result, nonce, keyHandle, Defines.YSM_AEAD_GENERATE);
+        return parseResult(result, nonce, keyHandle, YSM_AEAD_GENERATE);
     }
 
     /**
@@ -65,12 +68,12 @@ public class AEADCmd {
      * @throws YubiHSMErrorException error exception
      */
     public static Map<String, String> generateRandomAEAD(DeviceHandler device, String nonce, int keyHandle, int size) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        byte[] nonceBA = Utils.validateNonce(Utils.hexToByteArray(nonce), true);
+        byte[] nonceBA = validateNonce(hexToByteArray(nonce), true);
         byte[] len = {(byte) ((size << 24) >> 24)};
-        byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), len);
-        byte[] result = CommandHandler.execute(device, Defines.YSM_RANDOM_AEAD_GENERATE, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(nonceBA, leIntToBA(keyHandle), len);
+        byte[] result = CommandHandler.execute(device, YSM_RANDOM_AEAD_GENERATE, cmdBuffer, true);
 
-        return parseResult(result, nonce, keyHandle, Defines.YSM_RANDOM_AEAD_GENERATE);
+        return parseResult(result, nonce, keyHandle, YSM_RANDOM_AEAD_GENERATE);
     }
 
     /**
@@ -89,11 +92,11 @@ public class AEADCmd {
      * @throws YubiHSMErrorException error exception
      */
     public static Map<String, String> generateBufferAEAD(DeviceHandler device, String nonce, int keyHandle) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        byte[] nonceBA = Utils.validateNonce(Utils.hexToByteArray(nonce), true);
-        byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle));
-        byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_AEAD_GENERATE, cmdBuffer, true);
+        byte[] nonceBA = validateNonce(hexToByteArray(nonce), true);
+        byte[] cmdBuffer = concatAllArrays(nonceBA, leIntToBA(keyHandle));
+        byte[] result = CommandHandler.execute(device, YSM_BUFFER_AEAD_GENERATE, cmdBuffer, true);
 
-        return parseResult(result, nonce, keyHandle, Defines.YSM_BUFFER_AEAD_GENERATE);
+        return parseResult(result, nonce, keyHandle, YSM_BUFFER_AEAD_GENERATE);
     }
 
     /**
@@ -111,14 +114,14 @@ public class AEADCmd {
      * @throws YubiHSMErrorException error exception
      */
     public static boolean validateAEAD(DeviceHandler device, String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        byte[] aeadBA = Utils.hexToByteArray(aead);
-        byte[] plainBA = Utils.validateByteArray("plaintext", plaintext.getBytes(), 0, aeadBA.length - Defines.YSM_AEAD_MAC_SIZE, YubiHSM.minHashLength);
-        byte[] plainAndAead = Utils.concatAllArrays(plainBA, aeadBA);
-        if (plainAndAead.length > (Defines.YSM_MAX_PKT_SIZE - 0x10))
+        byte[] aeadBA = hexToByteArray(aead);
+        byte[] plainBA = validateByteArray("plaintext", plaintext.getBytes(), 0, aeadBA.length - YSM_AEAD_MAC_SIZE, YubiHSM.minHashLength);
+        byte[] plainAndAead = concatAllArrays(plainBA, aeadBA);
+        if (plainAndAead.length > (YSM_MAX_PKT_SIZE - 0x10))
             throw new YubiHSMInputException("Plaintext+aead too long");
-        byte[] nonceBA = Utils.validateNonce(Utils.hexToByteArray(nonce), true);
-        byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), Utils.addLengthToData(plainAndAead));
-        byte[] result = CommandHandler.execute(device, Defines.YSM_AEAD_DECRYPT_CMP, cmdBuffer, true);
+        byte[] nonceBA = validateNonce(hexToByteArray(nonce), true);
+        byte[] cmdBuffer = concatAllArrays(nonceBA, leIntToBA(keyHandle), addLengthToData(plainAndAead));
+        byte[] result = CommandHandler.execute(device, YSM_AEAD_DECRYPT_CMP, cmdBuffer, true);
 
         return parseValidationResult(result, nonce, keyHandle);
     }
@@ -137,14 +140,14 @@ public class AEADCmd {
     private static Map<String, String> parseResult(byte[] data, String nonce, int keyHandle, byte command) throws YubiHSMCommandFailedException, YubiHSMErrorException {
         Map<String, String> result = new HashMap<String, String>();
 
-        if (data[10] == Defines.YSM_STATUS_OK) {
-            byte[] aead = Utils.rangeOfByteArray(data, Defines.YSM_AEAD_NONCE_SIZE + 6, data[11]);
-            Utils.validateCmdResponseBA("keyHandle", Utils.rangeOfByteArray(data, 6, 4), Utils.leIntToBA(keyHandle));
-            result.put("nonce", Utils.validateCmdResponseString("nonce",
-                                Utils.byteArrayToHex(Utils.rangeOfByteArray(data, 0, Defines.YSM_AEAD_NONCE_SIZE)), nonce));
-            result.put("aead", Utils.byteArrayToHex(aead));
+        if (data[10] == YSM_STATUS_OK) {
+            byte[] aead = rangeOfByteArray(data, YSM_AEAD_NONCE_SIZE + 6, data[11]);
+            validateCmdResponseBA("keyHandle", rangeOfByteArray(data, 6, 4), leIntToBA(keyHandle));
+            result.put("nonce", validateCmdResponseString("nonce",
+                                byteArrayToHex(rangeOfByteArray(data, 0, YSM_AEAD_NONCE_SIZE)), nonce));
+            result.put("aead", byteArrayToHex(aead));
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(command) + " failed: " + Defines.getCommandStatus(data[10]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(command) + " failed: " + getCommandStatus(data[10]));
         }
 
         return result;
@@ -161,14 +164,14 @@ public class AEADCmd {
      * @throws YubiHSMErrorException error exception
      */
     private static boolean parseValidationResult(byte[] data, String nonce, int keyHandle) throws YubiHSMCommandFailedException, YubiHSMErrorException {
-        Utils.validateCmdResponseBA("keyHandle", Utils.rangeOfByteArray(data, Defines.YSM_AEAD_NONCE_SIZE, 4), Utils.leIntToBA(keyHandle));
-        Utils.validateCmdResponseString("nonce", Utils.byteArrayToHex(new String(data, 0, Defines.YSM_AEAD_NONCE_SIZE).getBytes()), nonce);
-        if (data[10] == Defines.YSM_STATUS_OK) {
+        validateCmdResponseBA("keyHandle", rangeOfByteArray(data, YSM_AEAD_NONCE_SIZE, 4), leIntToBA(keyHandle));
+        validateCmdResponseString("nonce", byteArrayToHex(new String(data, 0, YSM_AEAD_NONCE_SIZE).getBytes()), nonce);
+        if (data[10] == YSM_STATUS_OK) {
             return true;
-        } else if (data[10] == Defines.YSM_MISMATCH) {
+        } else if (data[10] == YSM_MISMATCH) {
             return false;
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_AEAD_DECRYPT_CMP) + " failed: " + Defines.getCommandStatus(data[10]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_AEAD_DECRYPT_CMP) + " failed: " + getCommandStatus(data[10]));
         }
     }
 }

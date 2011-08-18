@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>MonitorExitCmd</code> is used to send magics to the HSM in debug mode and get it to exit to configuration mode. */
 public class MonitorExitCmd {
@@ -30,7 +31,7 @@ public class MonitorExitCmd {
      * @throws YubiHSMErrorException if the YubiHSM command failed to execute
      */
     public static void execute(DeviceHandler deviceHandler) throws YubiHSMErrorException {
-        byte[] data = Utils.concatAllArrays(Utils.leIntToBA(0xbaadbeef),Utils.leIntToBA(0xffffffff - 0xbaadbeef));
-        CommandHandler.execute(deviceHandler, Defines.YSM_MONITOR_EXIT, data, false);
+        byte[] data = concatAllArrays(leIntToBA(0xbaadbeef), leIntToBA(0xffffffff - 0xbaadbeef));
+        CommandHandler.execute(deviceHandler, YSM_MONITOR_EXIT, data, false);
     }
 }

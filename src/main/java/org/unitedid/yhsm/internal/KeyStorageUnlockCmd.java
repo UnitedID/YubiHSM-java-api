@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 public class KeyStorageUnlockCmd {
 
@@ -36,9 +37,9 @@ public class KeyStorageUnlockCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     public static boolean execute(DeviceHandler device, String password) throws YubiHSMErrorException, YubiHSMInputException, YubiHSMCommandFailedException {
-        byte[] pw = Utils.hexToByteArray(password);
-        byte[] passwordBA = Utils.validateByteArray("password", pw, Defines.YSM_BLOCK_SIZE, 0, Defines.YSM_BLOCK_SIZE);
-        return parseResult(CommandHandler.execute(device, Defines.YSM_KEY_STORAGE_UNLOCK, passwordBA, true));
+        byte[] pw = hexToByteArray(password);
+        byte[] passwordBA = validateByteArray("password", pw, YSM_BLOCK_SIZE, 0, YSM_BLOCK_SIZE);
+        return parseResult(CommandHandler.execute(device, YSM_KEY_STORAGE_UNLOCK, passwordBA, true));
     }
 
     /**
@@ -49,12 +50,12 @@ public class KeyStorageUnlockCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     private static boolean parseResult(byte[] result) throws YubiHSMCommandFailedException {
-        if (result[0] == Defines.YSM_STATUS_OK) {
+        if (result[0] == YSM_STATUS_OK) {
             return true;
-        } else if (result[0] == Defines.YSM_KEY_STORAGE_LOCKED) {
+        } else if (result[0] == YSM_KEY_STORAGE_LOCKED) {
             return false;
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_KEY_STORAGE_UNLOCK) + " failed: " + Defines.getCommandStatus(result[0]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_KEY_STORAGE_UNLOCK) + " failed: " + getCommandStatus(result[0]));
         }
     }
 }

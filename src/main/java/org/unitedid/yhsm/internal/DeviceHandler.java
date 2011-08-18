@@ -21,7 +21,8 @@ package org.unitedid.yhsm.internal;
 import gnu.io.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.unitedid.yhsm.utility.Utils;
+
+import static org.unitedid.yhsm.utility.Utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,7 +108,7 @@ public class DeviceHandler {
                     log.info("Drained: {}", new String(buffer, 0, buffer.length)); //TODO: Do we really need to log this? If not the loop can be simplified.
                     buffer = new byte[0];
                 } else {
-                    buffer = Utils.concatAllArrays(buffer, b);
+                    buffer = concatAllArrays(buffer, b);
                 }
             }
         } catch (IOException e) {

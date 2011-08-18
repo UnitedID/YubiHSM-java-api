@@ -18,7 +18,9 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
+
 
 /** <code>BufferCmd</code> implements the internal buffer functions of the YubiHSM. */
 public class BufferCmd {
@@ -39,8 +41,8 @@ public class BufferCmd {
         int dataLength = data.getBytes().length;
         byte[] off = {(byte) ((offset << 24) >> 24)};
 
-        byte[] cmdBuffer = Utils.concatAllArrays(off, Utils.addLengthToData(data.getBytes()));
-        byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_LOAD, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(off, addLengthToData(data.getBytes()));
+        byte[] result = CommandHandler.execute(device, YSM_BUFFER_LOAD, cmdBuffer, true);
 
         return parseResult(offset, dataLength, result);
     }
@@ -57,8 +59,8 @@ public class BufferCmd {
     public static int loadData(DeviceHandler device, byte[] data, int offset) throws YubiHSMErrorException {
         int dataLength = data.length;
         byte[] off = {(byte) ((offset << 24) >> 24)};
-        byte[] cmdBuffer = Utils.concatAllArrays(off, Utils.addLengthToData(data));
-        byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_LOAD, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(off, addLengthToData(data));
+        byte[] result = CommandHandler.execute(device, YSM_BUFFER_LOAD, cmdBuffer, true);
 
         return parseResult(offset, dataLength, result);
     }
@@ -74,7 +76,7 @@ public class BufferCmd {
      */
     public static int loadRandomData(DeviceHandler device, int length, int offset) throws YubiHSMErrorException {
         byte[] cmdBuffer = {(byte) ((offset << 24) >> 24), (byte) ((length << 24) >> 24)};
-        byte[] result = CommandHandler.execute(device, Defines.YSM_BUFFER_RANDOM_LOAD, cmdBuffer, true);
+        byte[] result = CommandHandler.execute(device, YSM_BUFFER_RANDOM_LOAD, cmdBuffer, true);
 
         return parseResult(offset, length, result);
     }

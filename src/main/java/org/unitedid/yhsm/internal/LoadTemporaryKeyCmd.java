@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>LoadTemporaryKeyCmd</code> implements loading AEAD into the phantom key handle */
 public class LoadTemporaryKeyCmd {
@@ -39,11 +40,11 @@ public class LoadTemporaryKeyCmd {
      * @throws YubiHSMInputException argument exceptions
      */
     public static boolean execute(DeviceHandler device, String nonce, int keyHandle, String aead) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
-        byte[] nonceBA = Utils.validateNonce(Utils.hexToByteArray(nonce), true);
-        int maxAeadLength = Defines.YSM_MAX_KEY_SIZE + 4 + Defines.YSM_AEAD_MAC_SIZE;
-        byte[] aeadBA = Utils.validateByteArray("aead", Utils.hexToByteArray(aead), maxAeadLength, 0, 0);
-        byte[] cmdBuffer = Utils.concatAllArrays(nonceBA, Utils.leIntToBA(keyHandle), Utils.addLengthToData(aeadBA));
-        byte[] result = CommandHandler.execute(device, Defines.YSM_TEMP_KEY_LOAD, cmdBuffer, true);
+        byte[] nonceBA = validateNonce(hexToByteArray(nonce), true);
+        int maxAeadLength = YSM_MAX_KEY_SIZE + 4 + YSM_AEAD_MAC_SIZE;
+        byte[] aeadBA = validateByteArray("aead", hexToByteArray(aead), maxAeadLength, 0, 0);
+        byte[] cmdBuffer = concatAllArrays(nonceBA, leIntToBA(keyHandle), addLengthToData(aeadBA));
+        byte[] result = CommandHandler.execute(device, YSM_TEMP_KEY_LOAD, cmdBuffer, true);
 
         return parseResult(result, nonce, keyHandle);
     }
@@ -59,12 +60,12 @@ public class LoadTemporaryKeyCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     private static boolean parseResult(byte[] result, String nonce, int keyHandle) throws YubiHSMErrorException, YubiHSMCommandFailedException {
-        if (result[10] == Defines.YSM_STATUS_OK) {
-            Utils.validateCmdResponseString("nonce", Utils.byteArrayToHex(Utils.rangeOfByteArray(result, 0, Defines.YSM_AEAD_NONCE_SIZE)), nonce);
-            Utils.validateCmdResponseBA("keyHandle", Utils.rangeOfByteArray(result, 6, 4), Utils.leIntToBA(keyHandle));
+        if (result[10] == YSM_STATUS_OK) {
+            validateCmdResponseString("nonce", byteArrayToHex(rangeOfByteArray(result, 0, YSM_AEAD_NONCE_SIZE)), nonce);
+            validateCmdResponseBA("keyHandle", rangeOfByteArray(result, 6, 4), leIntToBA(keyHandle));
             return true;
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_TEMP_KEY_LOAD) + " failed: " + Defines.getCommandStatus(result[10]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_TEMP_KEY_LOAD) + " failed: " + getCommandStatus(result[10]));
         }
     }
 }

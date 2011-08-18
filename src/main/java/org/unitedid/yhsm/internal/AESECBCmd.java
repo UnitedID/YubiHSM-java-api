@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>AESECBCmd</code> implements AES ECB block cipher commands for the YubiHSM. */
 public class AESECBCmd {
@@ -38,10 +39,10 @@ public class AESECBCmd {
      * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
      */
     public static String encrypt(DeviceHandler deviceHandler, int keyHandle, String plaintext) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
-        byte[] cmdBuffer = Utils.concatAllArrays(Utils.leIntToBA(keyHandle), Utils.validateByteArray("plaintext", plaintext.getBytes(), Defines.YSM_BLOCK_SIZE, 0, Defines.YSM_BLOCK_SIZE));
-        byte[] result = CommandHandler.execute(deviceHandler, Defines.YSM_AES_ECB_BLOCK_ENCRYPT, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), validateByteArray("plaintext", plaintext.getBytes(), YSM_BLOCK_SIZE, 0, YSM_BLOCK_SIZE));
+        byte[] result = CommandHandler.execute(deviceHandler, YSM_AES_ECB_BLOCK_ENCRYPT, cmdBuffer, true);
 
-        return parseResult(result, keyHandle, Defines.YSM_AES_ECB_BLOCK_ENCRYPT, false);
+        return parseResult(result, keyHandle, YSM_AES_ECB_BLOCK_ENCRYPT, false);
     }
 
     /**
@@ -56,10 +57,10 @@ public class AESECBCmd {
      * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
      */
     public static String decrypt(DeviceHandler deviceHandler, int keyHandle, String cipherText) throws YubiHSMErrorException, YubiHSMInputException, YubiHSMCommandFailedException {
-        byte[] cmdBuffer = Utils.concatAllArrays(Utils.leIntToBA(keyHandle), Utils.validateByteArray("cipherText", Utils.hexToByteArray(cipherText), 0, Defines.YSM_BLOCK_SIZE, 0));
-        byte[] result = CommandHandler.execute(deviceHandler, Defines.YSM_AES_ECB_BLOCK_DECRYPT, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), validateByteArray("cipherText", hexToByteArray(cipherText), 0, YSM_BLOCK_SIZE, 0));
+        byte[] result = CommandHandler.execute(deviceHandler, YSM_AES_ECB_BLOCK_DECRYPT, cmdBuffer, true);
 
-        return parseResult(result, keyHandle, Defines.YSM_AES_ECB_BLOCK_DECRYPT, true);
+        return parseResult(result, keyHandle, YSM_AES_ECB_BLOCK_DECRYPT, true);
     }
 
     /**
@@ -75,20 +76,20 @@ public class AESECBCmd {
      * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
      */
     public static boolean compare(DeviceHandler deviceHandler, int keyHandle, String cipherText, String plaintext) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
-        byte[] cipherTextBA = Utils.validateByteArray("cipherText", Utils.hexToByteArray(cipherText), 0, Defines.YSM_BLOCK_SIZE, 0);
-        byte[] plaintextBA = Utils.validateByteArray("plaintext", plaintext.getBytes(), Defines.YSM_BLOCK_SIZE, 0, Defines.YSM_BLOCK_SIZE);
-        byte[] keyHandleBA = Utils.leIntToBA(keyHandle);
-        byte[] cmdBuffer = Utils.concatAllArrays(keyHandleBA, cipherTextBA, plaintextBA);
-        byte[] result = CommandHandler.execute(deviceHandler, Defines.YSM_AES_ECB_BLOCK_DECRYPT_CMP, cmdBuffer, true);
+        byte[] cipherTextBA = validateByteArray("cipherText", hexToByteArray(cipherText), 0, YSM_BLOCK_SIZE, 0);
+        byte[] plaintextBA = validateByteArray("plaintext", plaintext.getBytes(), YSM_BLOCK_SIZE, 0, YSM_BLOCK_SIZE);
+        byte[] keyHandleBA = leIntToBA(keyHandle);
+        byte[] cmdBuffer = concatAllArrays(keyHandleBA, cipherTextBA, plaintextBA);
+        byte[] result = CommandHandler.execute(deviceHandler, YSM_AES_ECB_BLOCK_DECRYPT_CMP, cmdBuffer, true);
 
-        Utils.validateCmdResponseBA("keyHandle", Utils.rangeOfByteArray(result, 0, 4), keyHandleBA);
+        validateCmdResponseBA("keyHandle", rangeOfByteArray(result, 0, 4), keyHandleBA);
 
-        if (result[4] == Defines.YSM_STATUS_OK) {
+        if (result[4] == YSM_STATUS_OK) {
             return true;
-        } else if (result[4] == Defines.YSM_MISMATCH) {
+        } else if (result[4] == YSM_MISMATCH) {
             return false;
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_AES_ECB_BLOCK_DECRYPT_CMP) + " failed: " + Defines.getCommandStatus(result[4]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_AES_ECB_BLOCK_DECRYPT_CMP) + " failed: " + getCommandStatus(result[4]));
         }
     }
 
@@ -104,13 +105,13 @@ public class AESECBCmd {
      * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
      */
     private static String parseResult(byte[] data, int keyHandle, byte command, boolean decrypt) throws YubiHSMErrorException, YubiHSMCommandFailedException {
-        Utils.validateCmdResponseBA("keyHandle", Utils.rangeOfByteArray(data, 0, 4), Utils.leIntToBA(keyHandle));
-        byte[] result = Utils.rangeOfByteArray(data, 4, Defines.YSM_BLOCK_SIZE);
+        validateCmdResponseBA("keyHandle", rangeOfByteArray(data, 0, 4), leIntToBA(keyHandle));
+        byte[] result = rangeOfByteArray(data, 4, YSM_BLOCK_SIZE);
 
-        if (data[20] == Defines.YSM_STATUS_OK) {
-            return decrypt ? new String(result).trim() : Utils.byteArrayToHex(result);
+        if (data[20] == YSM_STATUS_OK) {
+            return decrypt ? new String(result).trim() : byteArrayToHex(result);
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(command) + " failed: " + Defines.getCommandStatus(result[4]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(command) + " failed: " + getCommandStatus(result[4]));
         }
     }
 }

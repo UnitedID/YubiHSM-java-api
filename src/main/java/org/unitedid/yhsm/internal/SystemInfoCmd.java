@@ -18,10 +18,11 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 public class SystemInfoCmd {
 
@@ -29,7 +30,7 @@ public class SystemInfoCmd {
 
     public static Map<String, String> execute(DeviceHandler device) throws YubiHSMErrorException {
         byte[] empty = new byte[0];
-        byte[] result = CommandHandler.execute(device, Defines.YSM_SYSTEM_INFO_QUERY, empty, true);
+        byte[] result = CommandHandler.execute(device, YSM_SYSTEM_INFO_QUERY, empty, true);
 
         return parseResult(result);
     }
@@ -40,7 +41,7 @@ public class SystemInfoCmd {
         result.put("minor", String.valueOf(data[1]));
         result.put("build", String.valueOf(data[2]));
         result.put("protocol", String.valueOf(data[3]));
-        result.put("sysid", "0x" + Utils.byteArrayToHex(new String(data, 4, 12).getBytes()));
+        result.put("sysid", "0x" + byteArrayToHex(new String(data, 4, 12).getBytes()));
 
         return result;
     }

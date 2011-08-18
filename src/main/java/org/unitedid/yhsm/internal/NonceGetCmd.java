@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>NonceGetCmd</code> implements get nonce from the YubiHSM */
 public class NonceGetCmd {
@@ -37,7 +38,7 @@ public class NonceGetCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      */
     public static Nonce execute(DeviceHandler device, short increment) throws YubiHSMErrorException, YubiHSMCommandFailedException {
-        byte[] result = CommandHandler.execute(device, Defines.YSM_NONCE_GET, Utils.leShortToByteArray(increment), true);
+        byte[] result = CommandHandler.execute(device, YSM_NONCE_GET, leShortToByteArray(increment), true);
 
         return parseResult(result);
     }
@@ -52,14 +53,14 @@ public class NonceGetCmd {
     private static Nonce parseResult(byte[] data) throws YubiHSMCommandFailedException {
         Nonce result = null;
 
-        if (data[0] == Defines.YSM_STATUS_OK) {
-            int vtile = Utils.leBAToBeInt(Utils.rangeOfByteArray(data, 1, 4));
-            int powerUpCount = Utils.leBAToBeShort(Utils.rangeOfByteArray(data, 5, 2));
+        if (data[0] == YSM_STATUS_OK) {
+            int vtile = leBAToBeInt(rangeOfByteArray(data, 1, 4));
+            int powerUpCount = leBAToBeShort(rangeOfByteArray(data, 5, 2));
             int nonceInt = powerUpCount + vtile;
-            String nonce =  Utils.byteArrayToHex(Utils.rangeOfByteArray(data, 1, Defines.YSM_AEAD_NONCE_SIZE));
+            String nonce =  byteArrayToHex(rangeOfByteArray(data, 1, YSM_AEAD_NONCE_SIZE));
             result = new Nonce(vtile, powerUpCount, nonceInt, nonce);
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_NONCE_GET) + " failed: " + Defines.getCommandStatus(data[0]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_NONCE_GET) + " failed: " + getCommandStatus(data[0]));
         }
 
         return result;

@@ -21,7 +21,8 @@ package org.unitedid.yhsm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unitedid.yhsm.internal.*;
-import org.unitedid.yhsm.utility.Utils;
+
+import static org.unitedid.yhsm.utility.Utils.*;
 
 import java.util.Map;
 
@@ -147,9 +148,9 @@ public class YubiHSM  {
         if (tokenSeed.length() != 40)
             throw new YubiHSMInputException("Seed is not of required length, got " + tokenSeed.length() + " but expected 40");
 
-        byte[] seed = Utils.hexToByteArray(tokenSeed);
-        byte[] flag = Utils.leIntToBA(0x10000); // Generate HMAC SHA1 Flag
-        loadBufferData(Utils.concatAllArrays(seed, flag), 0);
+        byte[] seed = hexToByteArray(tokenSeed);
+        byte[] flag = leIntToBA(0x10000); // Generate HMAC SHA1 Flag
+        loadBufferData(concatAllArrays(seed, flag), 0);
 
         return generateBufferAEAD(nonce, keyHandle).get("aead");
     }

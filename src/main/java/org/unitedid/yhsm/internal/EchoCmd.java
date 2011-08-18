@@ -18,7 +18,9 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
+
 
 /** <code>EchoCmd</code> implements the YubiHSM echo command. */
 public class EchoCmd {
@@ -35,7 +37,7 @@ public class EchoCmd {
      * @throws YubiHSMErrorException if the YubiHSM command failed to execute
      */
     public static String execute(DeviceHandler device, String data) throws YubiHSMErrorException {
-        byte[] buffer = CommandHandler.execute(device, Defines.YSM_ECHO, Utils.addLengthToData(data.getBytes()), true);
+        byte[] buffer = CommandHandler.execute(device, YSM_ECHO, addLengthToData(data.getBytes()), true);
         return parseResult(buffer);
     }
 

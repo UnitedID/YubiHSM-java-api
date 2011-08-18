@@ -20,7 +20,9 @@ package org.unitedid.yhsm.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.unitedid.yhsm.utility.Utils;
+
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 public class CommandHandler {
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
@@ -30,14 +32,14 @@ public class CommandHandler {
     protected static synchronized byte[] execute(DeviceHandler device, byte command, byte[] data, boolean readResponse) throws YubiHSMErrorException {
         byte[] cmdBuffer;
 
-        if (command != Defines.YSM_NULL) {
+        if (command != YSM_NULL) {
             cmdBuffer = new byte[]{(byte) (((data.length + 1) << 24) >> 24), command};
         } else {
             cmdBuffer = new byte[]{command};
         }
 
-        log.debug("CMD BUFFER: {}", Utils.byteArrayToHex(Utils.concatAllArrays(cmdBuffer, data)));
-        device.write(Utils.concatAllArrays(cmdBuffer, data));
+        log.debug("CMD BUFFER: {}", byteArrayToHex(concatAllArrays(cmdBuffer, data)));
+        device.write(concatAllArrays(cmdBuffer, data));
 
         try {
             if (!readResponse) {
@@ -51,7 +53,7 @@ public class CommandHandler {
                 timeout = (int) (device.getTimeout() * 1000); // Need milliseconds
             }
 
-            log.debug("CommandHandler ({}) timeout set to: {} ms ", Defines.getCommandString(command), timeout);
+            log.debug("CommandHandler ({}) timeout set to: {} ms ", getCommandString(command), timeout);
 
             while (sleptTime <= timeout) {
                 Thread.sleep(1);
@@ -79,24 +81,24 @@ public class CommandHandler {
             throw new YubiHSMErrorException("No data received from the YubiHSM!");
         }
 
-        if ((result[1] & Defines.YSM_RESPONSE) != 0) {
-            log.debug("Got response from ({}) {}", result[1], Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
+        if ((result[1] & YSM_RESPONSE) != 0) {
+            log.debug("Got response from ({}) {}", result[1], getCommandString((byte) (result[1] - YSM_RESPONSE)));
         }
 
-        if (result[1] == (command | Defines.YSM_RESPONSE)) {
+        if (result[1] == (command | YSM_RESPONSE)) {
             int len = (int)result[0] - 1;
             return device.read(len);
         } else {
             reset(device);
-            throw new YubiHSMErrorException("YubiHSM responded to the wrong command. Expected " + Defines.getCommandString(command) + " but got " + Defines.getCommandString((byte) (result[1] - Defines.YSM_RESPONSE)));
+            throw new YubiHSMErrorException("YubiHSM responded to the wrong command. Expected " + getCommandString(command) + " but got " + getCommandString((byte) (result[1] - YSM_RESPONSE)));
         }
     }
 
     public static void reset(DeviceHandler device) throws YubiHSMErrorException {
-        byte[] reset = new byte[Defines.YSM_MAX_PKT_SIZE - 1];
-        for (int i=0; i < Defines.YSM_MAX_PKT_SIZE - 1; i++) {
+        byte[] reset = new byte[YSM_MAX_PKT_SIZE - 1];
+        for (int i=0; i < YSM_MAX_PKT_SIZE - 1; i++) {
             reset[i] = 0x00;
         }
-        execute(device, Defines.YSM_NULL, reset, false);
+        execute(device, YSM_NULL, reset, false);
     }
 }

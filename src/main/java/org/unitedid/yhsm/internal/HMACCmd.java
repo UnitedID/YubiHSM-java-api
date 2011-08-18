@@ -18,10 +18,11 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>HMACCmd</code> implements the HMAC SHA1 commands for the YubiHSM. */
  public class HMACCmd {
@@ -44,21 +45,21 @@ import java.util.Map;
      * @throws YubiHSMInputException if an argument does not validate
      */
     public static Map<String, String> generateHMACSHA1(DeviceHandler deviceHandler, byte[] data, int keyHandle, byte flags, boolean last, boolean toBuffer) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        byte [] dataBA = Utils.validateByteArray("data", data, Defines.YSM_MAX_PKT_SIZE - 6, 0, 0);
+        byte [] dataBA = validateByteArray("data", data, YSM_MAX_PKT_SIZE - 6, 0, 0);
 
         if (flags == 0) {
-            flags = Defines.YSM_HMAC_SHA1_RESET;
+            flags = YSM_HMAC_SHA1_RESET;
             if (last) {
-                flags |= Defines.YSM_HMAC_SHA1_FINAL;
+                flags |= YSM_HMAC_SHA1_FINAL;
             }
             if (toBuffer) {
-                flags |= Defines.YSM_HMAC_SHA1_TO_BUFFER;
+                flags |= YSM_HMAC_SHA1_TO_BUFFER;
             }
         }
 
         byte[] flagsBA = { flags };
-        byte[] cmdBuffer = Utils.concatAllArrays(Utils.leIntToBA(keyHandle), flagsBA, Utils.addLengthToData(dataBA));
-        byte[] result = CommandHandler.execute(deviceHandler, Defines.YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), flagsBA, addLengthToData(dataBA));
+        byte[] result = CommandHandler.execute(deviceHandler, YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
 
         return parseResult(result, keyHandle, last);
     }
@@ -79,17 +80,17 @@ import java.util.Map;
     public static Map<String, String> next(DeviceHandler deviceHandler, byte[] data, int keyHandle, boolean last, boolean toBuffer) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         byte flags;
         if (last) {
-            flags = Defines.YSM_HMAC_SHA1_FINAL;
+            flags = YSM_HMAC_SHA1_FINAL;
         } else {
             flags = 0x0;
         }
         if (toBuffer) {
-            flags |= Defines.YSM_HMAC_SHA1_TO_BUFFER;
+            flags |= YSM_HMAC_SHA1_TO_BUFFER;
         }
 
         byte[] flagsBA = { flags };
-        byte[] cmdBuffer = Utils.concatAllArrays(Utils.leIntToBA(keyHandle), flagsBA, Utils.addLengthToData(data));
-        byte[] result = CommandHandler.execute(deviceHandler, Defines.YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
+        byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), flagsBA, addLengthToData(data));
+        byte[] result = CommandHandler.execute(deviceHandler, YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
 
         return parseResult(result, keyHandle, last);
     }
@@ -108,19 +109,19 @@ import java.util.Map;
      */
     private static Map<String, String> parseResult(byte[] data, int keyHandle, boolean last) throws YubiHSMErrorException, YubiHSMCommandFailedException, YubiHSMInputException {
         Map<String, String> result = new HashMap<String, String>();
-        if (data[4] == Defines.YSM_STATUS_OK) {
-            Utils.validateCmdResponseBA("keyHandle", Utils.rangeOfByteArray(data, 0, 4), Utils.leIntToBA(keyHandle));
+        if (data[4] == YSM_STATUS_OK) {
+            validateCmdResponseBA("keyHandle", rangeOfByteArray(data, 0, 4), leIntToBA(keyHandle));
             if (last) {
                 result.put("status", "OK");
-                result.put("hash", Utils.byteArrayToHex(Utils.rangeOfByteArray(data, 6, data[5])));
+                result.put("hash", byteArrayToHex(rangeOfByteArray(data, 6, data[5])));
             } else {
                 byte[] zeroHash = { 0x00 };
-                zeroHash = Utils.validateByteArray("zeroHash", zeroHash, 0, 0, 20);
+                zeroHash = validateByteArray("zeroHash", zeroHash, 0, 0, 20);
                 result.put("status", "Expect more data");
-                result.put("hash", Utils.byteArrayToHex(zeroHash));
+                result.put("hash", byteArrayToHex(zeroHash));
             }
         } else {
-            throw new YubiHSMCommandFailedException("Command " + Defines.getCommandString(Defines.YSM_HMAC_SHA1_GENERATE) + " failed: " + Defines.getCommandStatus(data[4]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_HMAC_SHA1_GENERATE) + " failed: " + getCommandStatus(data[4]));
         }
 
         return result;

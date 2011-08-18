@@ -24,6 +24,9 @@ import org.unitedid.yhsm.utility.Utils;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
+
 /** <code>OathHOTPCmd</code> implements OATH-HOTP OTP validation*/
 public class OathHOTPCmd {
 
@@ -55,7 +58,7 @@ public class OathHOTPCmd {
 
         lookAhead = lookAhead + counter;
         for (; counter < lookAhead; counter++) {
-            String hmac = hsm.generateHMACSHA1(Utils.longToByteArray(counter), Defines.YSM_TEMP_KEY_HANDLE, true, false).get("hash");
+            String hmac = hsm.generateHMACSHA1(longToByteArray(counter), YSM_TEMP_KEY_HANDLE, true, false).get("hash");
             String code = truncate(hmac, otpLength);
             if (code.equals(otp)) {
                 return counter + 1;
@@ -74,8 +77,8 @@ public class OathHOTPCmd {
      * @throws YubiHSMInputException argument exceptions
      */
     public static String truncate(String hmac, int otpLength) throws YubiHSMInputException {
-        byte[] hmacBA = Utils.hexToByteArray(hmac);
-        Utils.validateByteArray("hmacBA", hmacBA, 0, 20, 0);
+        byte[] hmacBA = hexToByteArray(hmac);
+        validateByteArray("hmacBA", hmacBA, 0, 20, 0);
 
         int offset = hmacBA[19] & 0xf;
         int binCode = (hmacBA[offset] & 0x7f) << 24 | (hmacBA[offset+1] & 0xff) << 16 | (hmacBA[offset+2] & 0xff) << 8 | (hmacBA[offset+3] & 0xff);

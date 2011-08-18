@@ -18,7 +18,8 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.unitedid.yhsm.utility.Utils;
+import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>RandomCmd</code> implements YubiHSM random generator. */
 public class RandomCmd {
@@ -36,11 +37,11 @@ public class RandomCmd {
      * @throws YubiHSMInputException invalid argument exception
      */
     public static byte[] execute(DeviceHandler device, int bytes) throws YubiHSMErrorException, YubiHSMInputException {
-        if (bytes > 0 && bytes > Defines.YSM_MAX_PKT_SIZE - 1) {
-            throw new YubiHSMInputException("'Bytes' int too large, expected less than or equal to " + (Defines.YSM_MAX_PKT_SIZE -1) + " but got " + bytes);
+        if (bytes > 0 && bytes > YSM_MAX_PKT_SIZE - 1) {
+            throw new YubiHSMInputException("'Bytes' int too large, expected less than or equal to " + (YSM_MAX_PKT_SIZE -1) + " but got " + bytes);
         }
         byte[] cmdBuffer = new byte[]{(byte) bytes};
-        byte[] result = CommandHandler.execute(device, Defines.YSM_RANDOM_GENERATE, cmdBuffer, true);
+        byte[] result = CommandHandler.execute(device, YSM_RANDOM_GENERATE, cmdBuffer, true);
         return parseResult(result);
     }
 
@@ -52,6 +53,6 @@ public class RandomCmd {
      */
     private static byte[] parseResult(byte[] data) {
         int bytes = data[0];
-        return Utils.rangeOfByteArray(data, 1, bytes);
+        return rangeOfByteArray(data, 1, bytes);
     }
 }

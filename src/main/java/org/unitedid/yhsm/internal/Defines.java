@@ -72,6 +72,7 @@ public class Defines {
     final static public byte YSM_RANDOM_RESEED = 0x25;
     final static public byte YSM_SYSTEM_INFO_QUERY = 0x26;
     final static public byte YSM_KEY_STORAGE_UNLOCK = 0x27;
+    final static public byte YSM_KEY_STORE_DECRYPT = 0x29;
     final static public byte YSM_MONITOR_EXIT = 0x7f;
 
     /**
@@ -102,6 +103,7 @@ public class Defines {
         put(0x25, "YSM_RANDOM_RESEED");
         put(0x26, "YSM_SYSTEM_INFO_QUERY");
         put(0x27, "YSM_KEY_STORAGE_UNLOCK");
+        put(0x29, "YSM_KEY_STORE_DECRYPT");
     }});
 
     /**

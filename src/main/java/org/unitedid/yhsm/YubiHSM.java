@@ -22,9 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unitedid.yhsm.internal.*;
 
-import static org.unitedid.yhsm.utility.Utils.*;
-
 import java.util.Map;
+
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>YubiHSM</code> the main class to use for YubiHSM commands */
 public class YubiHSM  {
@@ -80,8 +80,8 @@ public class YubiHSM  {
         Map<String, String> info = SystemInfoCmd.execute(deviceHandler);
 
         return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
-                                                                               info.get("build"), info.get("protocol"),
-                                                                               info.get("sysid"));
+                info.get("build"), info.get("protocol"),
+                info.get("sysid"));
     }
 
     /**
@@ -372,6 +372,18 @@ public class YubiHSM  {
      */
     public boolean compareAES_ECB(int keyHandle, String cipherText, String plaintext) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return AESECBCmd.compare(deviceHandler, keyHandle, cipherText, plaintext);
+    }
+
+    public boolean unlock(String password) throws YubiHSMErrorException, YubiHSMCommandFailedException, YubiHSMInputException {
+        if (info().get("major").equals("1")) {
+            return keyStoreDecrypt(password);
+        } else {
+            return keyStorageUnlock(password);
+        }
+    }
+
+    public boolean keyStoreDecrypt(String key) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return KeyStoreDecryptCmd.execute(deviceHandler, key);
     }
 
     /**

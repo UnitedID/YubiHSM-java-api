@@ -38,8 +38,16 @@ public class ConfigureHSM extends SetupCommon {
 
     @Test
     public void testConfigureHSM() throws Exception {
+        String cmd = null;
+        if (hsm.info().get("major").equals("1")) {
+            //cmd = "hsm ffffffff\r\r\r2f6af1e667456bb94528e7987344515b00000000000000000000000000000000\ryes";
+            cmd = "hsm ffffffff\r\r\r2f6af1e667456bb94528e7987344515b\ryes";
+        } else {
+            cmd = "hsm ffffffff\r\r2f6af1e667456bb94528e7987344515b\ryes";
+        }
+
         hsm.exitMonitorDebugMode();
-        System.out.println(runCommand("hsm ffffffff\r\r2f6af1e667456bb94528e7987344515b\ryes", true));
+        System.out.println(runCommand(cmd, true));
         System.out.println(runCommand("sysinfo", true));
         hsm.drainData();
         addKeys();

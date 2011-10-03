@@ -45,11 +45,11 @@ public class KeyStorageUnlockTest extends SetupCommon {
 
     @Test
     public void failedUnlockHsm() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        assertFalse(hsm.keyStorageUnlock("1111"));
+        assertFalse(hsm.unlock("1111"));
     }
 
     @Test
     public void unlockHsm() throws Exception {
-        assertTrue(hsm.keyStorageUnlock("2f6af1e667456bb94528e7987344515b"));
+        assertTrue(hsm.unlock("2f6af1e667456bb94528e7987344515b"));
     }
 }

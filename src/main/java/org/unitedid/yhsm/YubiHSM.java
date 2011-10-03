@@ -37,6 +37,9 @@ public class YubiHSM  {
     /** The hash length, default is 20 */
     public static int minHashLength = 20;
 
+    /* YubiHSM sysinfo cache */
+    private Map<String, String> info;
+
     /**
      * Constructor
      *
@@ -47,6 +50,7 @@ public class YubiHSM  {
     public YubiHSM(String device, float timeout) throws YubiHSMErrorException {
         deviceHandler = DeviceHandlerFactory.get(device, timeout);
         CommandHandler.reset(deviceHandler);
+        info = SystemInfoCmd.execute(deviceHandler);
     }
 
     /**
@@ -67,18 +71,16 @@ public class YubiHSM  {
      * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
     public Map<String, String> info() throws YubiHSMErrorException {
-        return SystemInfoCmd.execute(deviceHandler);
+        return info;
     }
 
     /**
-     * Get the firmware verseion and unique ID from the YubiHSM (string representation).
+     * Get the firmware version and unique ID from the YubiHSM (string representation).
      *
      * @return a string with version, protocol and unique ID
      * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
     public String infoToString() throws YubiHSMErrorException {
-        Map<String, String> info = SystemInfoCmd.execute(deviceHandler);
-
         return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
                 info.get("build"), info.get("protocol"),
                 info.get("sysid"));

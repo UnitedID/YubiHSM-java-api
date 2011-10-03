@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({InternalTestSuite.class, UtilityTestSuite.class})
+@Suite.SuiteClasses({ConfigureHSM.class, InternalTestSuite.class, UtilityTestSuite.class})
 
 public class MainTestSuite {
 

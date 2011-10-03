@@ -100,7 +100,7 @@
                 <version>2.8.1</version>
                 <configuration>
                     <includes>
-                        <include>**/ConfigureHSM.java</include>
+                        <!-- <include>**/ConfigureHSM.java</include> -->
                         <include>**/MainTestSuite.java</include>
                     </includes>
                 </configuration>

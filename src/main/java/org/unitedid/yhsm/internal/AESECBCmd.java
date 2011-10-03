@@ -111,7 +111,7 @@ public class AESECBCmd {
         if (data[20] == YSM_STATUS_OK) {
             return decrypt ? new String(result).trim() : byteArrayToHex(result);
         } else {
-            throw new YubiHSMCommandFailedException("Command " + getCommandString(command) + " failed: " + getCommandStatus(result[4]));
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(command) + " failed: " + getCommandStatus(data[20]));
         }
     }
 }

@@ -376,14 +376,35 @@ public class YubiHSM  {
         return AESECBCmd.compare(deviceHandler, keyHandle, cipherText, plaintext);
     }
 
+    /**
+     * Generic key store unlock method that calls the appropriate unlock function for this YubiHSM.
+     *
+     * @param password the Master key/HSM password in hex format
+     * @return true if unlock/decrypt was successful, otherwise an YubiHSMCommandFailedException is thrown
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException argument exception
+     *
+     * @see #keyStoreDecrypt(String)
+     * @see #keyStorageUnlock(String)
+     */
     public boolean unlock(String password) throws YubiHSMErrorException, YubiHSMCommandFailedException, YubiHSMInputException {
-        if (info().get("major").equals("1")) {
-            return keyStoreDecrypt(password);
-        } else {
+        if (info().get("major").equals("0")) {
             return keyStorageUnlock(password);
+        } else {
+            return keyStoreDecrypt(password);
         }
     }
 
+    /**
+     * Decrypt the YubiHSM key storage using the Master key.
+     *
+     * @param key the Master key in hex format (see output of automatic Master key generation during HSM configuration)
+     * @return true if unlock was successful, otherwise an YubiHSMCommandFailedException is thrown
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException argument exception
+     */
     public boolean keyStoreDecrypt(String key) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return KeyStoreDecryptCmd.execute(deviceHandler, key);
     }

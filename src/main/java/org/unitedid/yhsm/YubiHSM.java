@@ -423,6 +423,21 @@ public class YubiHSM  {
     }
 
     /**
+     * Have the YubiHSM unlock the HSM operations (those involving the keystore) with a YubiKey OTP.
+     *
+     * @param device the YubiHSM device
+     * @param publicId the YubiKey public id (in hex)
+     * @param otp the YubiKey OTP (in hex)
+     * @return true if unlock was successful
+     * @throws YubiHSMErrorException error exceptions
+     * @throws YubiHSMInputException argument exceptions
+     * @throws YubiHSMCommandFailedException command failed exception
+     */
+    public boolean unlockOtp(String publicId, String otp) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return HsmUnlockCmd.unlockOtp(deviceHandler, publicId, otp);
+    }
+
+    /**
      * Validate OATH-HOTP OTP by a token whose seed is available to the YubiHSM through an AEAD.
      *
      * @param hsm the current hsm object

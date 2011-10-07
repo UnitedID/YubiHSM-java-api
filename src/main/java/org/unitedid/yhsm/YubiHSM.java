@@ -22,9 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unitedid.yhsm.internal.*;
 
-import static org.unitedid.yhsm.utility.Utils.*;
-
 import java.util.Map;
+
+import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>YubiHSM</code> the main class to use for YubiHSM commands */
 public class YubiHSM  {
@@ -37,6 +37,9 @@ public class YubiHSM  {
     /** The hash length, default is 20 */
     public static int minHashLength = 20;
 
+    /* YubiHSM sysinfo cache */
+    private Map<String, String> info;
+
     /**
      * Constructor
      *
@@ -47,6 +50,7 @@ public class YubiHSM  {
     public YubiHSM(String device, float timeout) throws YubiHSMErrorException {
         deviceHandler = DeviceHandlerFactory.get(device, timeout);
         CommandHandler.reset(deviceHandler);
+        info = SystemInfoCmd.execute(deviceHandler);
     }
 
     /**
@@ -67,21 +71,19 @@ public class YubiHSM  {
      * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
     public Map<String, String> info() throws YubiHSMErrorException {
-        return SystemInfoCmd.execute(deviceHandler);
+        return info;
     }
 
     /**
-     * Get the firmware verseion and unique ID from the YubiHSM (string representation).
+     * Get the firmware version and unique ID from the YubiHSM (string representation).
      *
      * @return a string with version, protocol and unique ID
      * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
     public String infoToString() throws YubiHSMErrorException {
-        Map<String, String> info = SystemInfoCmd.execute(deviceHandler);
-
         return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
-                                                                               info.get("build"), info.get("protocol"),
-                                                                               info.get("sysid"));
+                info.get("build"), info.get("protocol"),
+                info.get("sysid"));
     }
 
     /**
@@ -375,6 +377,39 @@ public class YubiHSM  {
     }
 
     /**
+     * Generic key store unlock method that calls the appropriate unlock function for this YubiHSM.
+     *
+     * @param password the Master key/HSM password in hex format
+     * @return true if unlock/decrypt was successful, otherwise an YubiHSMCommandFailedException is thrown
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException argument exception
+     *
+     * @see #keyStoreDecrypt(String)
+     * @see #keyStorageUnlock(String)
+     */
+    public boolean unlock(String password) throws YubiHSMErrorException, YubiHSMCommandFailedException, YubiHSMInputException {
+        if (info().get("major").equals("0")) {
+            return keyStorageUnlock(password);
+        } else {
+            return keyStoreDecrypt(password);
+        }
+    }
+
+    /**
+     * Decrypt the YubiHSM key storage using the Master key.
+     *
+     * @param key the Master key in hex format (see output of automatic Master key generation during HSM configuration)
+     * @return true if unlock was successful, otherwise an YubiHSMCommandFailedException is thrown
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     * @throws YubiHSMInputException argument exception
+     */
+    public boolean keyStoreDecrypt(String key) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return KeyStoreDecryptCmd.execute(deviceHandler, key);
+    }
+
+    /**
      * Unlock the YubiHSM key storage using the HSM password.
      *
      * @param password the password in hex format (see output of automatic password generation during HSM configuration)
@@ -385,6 +420,21 @@ public class YubiHSM  {
      */
     public boolean keyStorageUnlock(String password) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return KeyStorageUnlockCmd.execute(deviceHandler, password);
+    }
+
+    /**
+     * Have the YubiHSM unlock the HSM operations (those involving the keystore) with a YubiKey OTP.
+     *
+     * @param device the YubiHSM device
+     * @param publicId the YubiKey public id (in hex)
+     * @param otp the YubiKey OTP (in hex)
+     * @return true if unlock was successful
+     * @throws YubiHSMErrorException error exceptions
+     * @throws YubiHSMInputException argument exceptions
+     * @throws YubiHSMCommandFailedException command failed exception
+     */
+    public boolean unlockOtp(String publicId, String otp) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return HsmUnlockCmd.unlockOtp(deviceHandler, publicId, otp);
     }
 
     /**

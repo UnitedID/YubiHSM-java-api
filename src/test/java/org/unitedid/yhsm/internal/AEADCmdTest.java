@@ -50,8 +50,18 @@ public class AEADCmdTest extends SetupCommon {
 
     @Test
     public void testGenerateAEADAndValidation() throws Exception {
-        String aead = AEADCmd.generateAEAD(deviceHandler, nonce, 8192, "123qwe").get("aead");
-        assertTrue(AEADCmd.validateAEAD(deviceHandler, nonce, 8192, aead, "123qwe"));
+        String aead = hsm.generateAEAD(nonce, 8192, "123qwe").get("aead");
+        assertTrue(hsm.validateAEAD(nonce, 8192, aead, "123qwe"));
+    }
+
+    @Test
+    public void testGenerateAEADAndValidationBA() throws Exception {
+        /* Test using 8-bit data that can't be converted from hex-string to byte
+         * array and then back into a String.
+         */
+        byte[] secretBA = Utils.hexToByteArray(new String("ec1c263a5d9bd270db0b19b18ca5396b"));
+        String aead = hsm.generateAEAD(nonce, 8192, secretBA).get("aead");
+        assertTrue(hsm.validateAEAD(nonce, 8192, aead, secretBA));
     }
 
     @Test

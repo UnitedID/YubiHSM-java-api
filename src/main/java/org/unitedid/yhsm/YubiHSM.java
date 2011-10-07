@@ -91,14 +91,29 @@ public class YubiHSM  {
      *
      * @param nonce the nonce
      * @param keyHandle the key to use
-     * @param data is either a string or a YubiHSM YubiKey secret
+     * @param data is the data to turn into an AEAD
+     * @return a hash map with the AEAD and nonce
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public Map<String, String> generateAEAD(String nonce, int keyHandle, byte[] data) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return AEADCmd.generateAEAD(deviceHandler, nonce, keyHandle, data);
+    }
+
+    /**
+     * Generate AEAD block from the data for a specific key handle and nonce.
+     *
+     * @param nonce the nonce
+     * @param keyHandle the key to use
+     * @param data is the data to turn into an AEAD
      * @return a hash map with the AEAD and nonce
      * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
      * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
      * @throws YubiHSMInputException if an argument does not validate
      */
     public Map<String, String> generateAEAD(String nonce, int keyHandle, String data) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        return AEADCmd.generateAEAD(deviceHandler, nonce, keyHandle, data);
+        return AEADCmd.generateAEAD(deviceHandler, nonce, keyHandle, data.getBytes());
     }
 
     /**
@@ -163,15 +178,32 @@ public class YubiHSM  {
      *
      * @param nonce the nonce or public_id
      * @param keyHandle the key to use
-     * @param aead the AEAD
-     * @param plaintext the plain text string
+     * @param aead the AEAD (hex string)
+     * @param plaintext the plain text data
+     * @return returns true if validation was a success, false if the validation failed
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public boolean validateAEAD(String nonce, int keyHandle, String aead, byte[] plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        return AEADCmd.validateAEAD(deviceHandler, nonce, keyHandle, aead, plaintext);
+    }
+
+    /**
+     * Validate an AEAD using the YubiHSM, matching it against some known plain text.
+     * Matching is done inside the YubiHSM so the decrypted AEAD is never exposed.
+     *
+     * @param nonce the nonce or public_id
+     * @param keyHandle the key to use
+     * @param aead the AEAD (hex string)
+     * @param plaintext the plain text data
      * @return returns true if validation was a success, false if the validation failed
      * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
      * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
      * @throws YubiHSMInputException if an argument does not validate
      */
     public boolean validateAEAD(String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        return AEADCmd.validateAEAD(deviceHandler, nonce, keyHandle, aead, plaintext);
+        return AEADCmd.validateAEAD(deviceHandler, nonce, keyHandle, aead, plaintext.getBytes());
     }
 
     /**

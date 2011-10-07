@@ -39,15 +39,15 @@ public class AEADCmd {
      * @param device the YubiHSM device handler
      * @param nonce the nonce
      * @param keyHandle the key to use
-     * @param data is either a string or a YubiHSM YubiKey secret
+     * @param data is the byte array to turn into an AEAD
      * @return a hash map with the AEAD and nonce
      * @throws YubiHSMInputException argument exceptions
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    public static Map<String, String> generateAEAD(DeviceHandler device, String nonce, int keyHandle, String data) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+    public static Map<String, String> generateAEAD(DeviceHandler device, String nonce, int keyHandle, byte[] data) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
         byte[] nonceBA = validateNonce(hexToByteArray(nonce), true);
-        byte[] newdata = validateByteArray("data", data.getBytes(), 0, 0, YubiHSM.minHashLength);
+        byte[] newdata = validateByteArray("data", data, 0, 0, YubiHSM.minHashLength);
         byte[] cmdBuffer = concatAllArrays(nonceBA, leIntToBA(keyHandle), addLengthToData(newdata));
         byte[] result = CommandHandler.execute(device, YSM_AEAD_GENERATE, cmdBuffer, true);
 
@@ -106,16 +106,16 @@ public class AEADCmd {
      * @param device the YubiHSM device
      * @param nonce the nonce or public_id
      * @param keyHandle the key to use
-     * @param aead the AEAD
-     * @param plaintext the plain text string
+     * @param aead the AEAD (hex string)
+     * @param plaintext the plain text data
      * @return returns true if validation was a success, false if the validation failed
      * @throws YubiHSMInputException argument exceptions
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    public static boolean validateAEAD(DeviceHandler device, String nonce, int keyHandle, String aead, String plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+    public static boolean validateAEAD(DeviceHandler device, String nonce, int keyHandle, String aead, byte[] plaintext) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
         byte[] aeadBA = hexToByteArray(aead);
-        byte[] plainBA = validateByteArray("plaintext", plaintext.getBytes(), 0, aeadBA.length - YSM_AEAD_MAC_SIZE, YubiHSM.minHashLength);
+        byte[] plainBA = validateByteArray("plaintext", plaintext, 0, aeadBA.length - YSM_AEAD_MAC_SIZE, YubiHSM.minHashLength);
         byte[] plainAndAead = concatAllArrays(plainBA, aeadBA);
         if (plainAndAead.length > (YSM_MAX_PKT_SIZE - 0x10))
             throw new YubiHSMInputException("Plaintext+aead too long");

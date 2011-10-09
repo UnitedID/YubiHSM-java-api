@@ -34,7 +34,8 @@ import org.junit.runners.Suite;
         OathHOTPCmdTest.class,
         NonceGetCmdTest.class,
         RandomCmdTest.class,
-        RandomReseedCmdTest.class})
+        RandomReseedCmdTest.class,
+        YubikeyOtpDecodeCmdTest.class})
 
 public class InternalTestSuite {
 

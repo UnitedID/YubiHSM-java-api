@@ -18,11 +18,28 @@
 
 package org.unitedid.yhsm.utility;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({UtilsTest.class, ModHexTest.class})
-public class UtilityTestSuite {
+import static junit.framework.Assert.assertEquals;
 
+public class ModHexTest {
+    private final String hex = "cc55115abb";
+    private final String modHex = "rrggbbglnn";
+    private final Long decimal = 877600529083L;
+
+    @Test
+    public void encodeHex() {
+        assertEquals(modHex, ModHex.encode(hex));
+    }
+
+    @Test
+    public void decodeHex() {
+        assertEquals(hex, ModHex.decode(modHex));
+    }
+
+    @Test
+    public void modHexToDecimal() {
+        assertEquals(decimal, ModHex.toDecimal(modHex));
+    }
 }
+

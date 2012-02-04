@@ -18,11 +18,9 @@
 
 package org.unitedid.yhsm.utility;
 
-import org.apache.commons.lang.StringUtils;
-
 public class ModHex {
-    private static final String[] HEX = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
-    private static final String[] MODHEX = {"c", "b", "d", "e", "f", "g", "h", "i", "j", "k", "l", "n", "r", "t", "u", "v"};
+    private static final String HEX = "0123456789abcdef";
+    private static final String MODHEX = "cbdefghijklnrtuv";
 
     /**
      * Encode a hex string as modHex
@@ -31,7 +29,7 @@ public class ModHex {
      * @return modHex string
      */
     public static String encode(String input) {
-        return StringUtils.replaceEach(input, HEX, MODHEX);
+        return replaceEach(input, HEX, MODHEX);
     }
 
     /**
@@ -41,7 +39,7 @@ public class ModHex {
      * @return hex string
      */
     public static String decode(String input) {
-        return StringUtils.replaceEach(input, MODHEX, HEX);
+        return replaceEach(input, MODHEX, HEX);
     }
 
     /**
@@ -52,5 +50,29 @@ public class ModHex {
      */
     public static Long toDecimal(String input) {
         return Long.decode("#" + decode(input));
+    }
+
+    /**
+     * Replace characters in a string
+     *
+     * @param input String to replace characters in
+     * @param searchList String of characters to search for
+     * @param replacementList String of characters to replace with
+     * @return modified string
+     */
+    private static String replaceEach(String input, String searchList, String replacementList) {
+        StringBuilder buf = new StringBuilder(input.length());
+
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+            int index = searchList.indexOf(ch);
+            if (index >= 0) {
+                buf.append(replacementList.charAt(index));
+            } else {
+                buf.append(ch);
+            }
+        }
+
+        return buf.toString();
     }
 }

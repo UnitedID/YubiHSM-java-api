@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Yubico AB. All rights reserved.
+ * Copyright (c) 2011 Yubico AB.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @author Fredrik Thulin <fredrik@yubico.com>
  */
 
 package org.unitedid.yhsm.internal;
@@ -33,6 +31,9 @@ import org.unitedid.yhsm.utility.Utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * @author Fredrik Thulin <fredrik@yubico.com>
+ */
 public class YubikeyOtpDecodeCmdTest extends SetupCommon {
 
     private final int keyHandle = 0x2000;

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2011 United ID. All rights reserved.
- * Copyright (c) 2011 Yubico AB. All rights reserved.
+ * Copyright (c) 2011 - 2013 United ID.
+ * Copyright (c) 2011 Yubico AB.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @author Stefan Wold <stefan.wold@unitedid.org>
- * @author Fredrik Thulin <fredrik@yubico.com>
  *
  * Yubico AB has contributed code to access some functions in the YubiHSM :
  *
@@ -35,7 +32,12 @@ import java.util.Map;
 
 import static org.unitedid.yhsm.utility.Utils.*;
 
-/** <code>YubiHSM</code> the main class to use for YubiHSM commands */
+/**
+ * <code>YubiHSM</code> the main class to use for YubiHSM commands
+ *
+ * @author Stefan Wold <stefan.wold@unitedid.org>
+ * @author Fredrik Thulin <fredrik@yubico.com>
+ */
 public class YubiHSM  {
     /** Logger */
     private final Logger log = LoggerFactory.getLogger(YubiHSM.class);

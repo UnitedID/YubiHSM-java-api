@@ -16,20 +16,18 @@
 
 package org.unitedid.yhsm;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.*;
 import org.unitedid.yhsm.internal.CommandHandler;
 import org.unitedid.yhsm.utility.Utils;
 
 public class ConfigureHSM extends SetupCommon {
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -54,7 +52,8 @@ public class ConfigureHSM extends SetupCommon {
         hsm.drainData();
         addKeys();
         System.out.println(runCommand("keylist", true));
-        System.out.println(runCommand("keycommit", true));
+        if (major_version != 0)
+            System.out.println(runCommand("keycommit", true));
         System.out.println(runCommand("dblist", true));
         deviceHandler.write("exit\r".getBytes());
         Thread.sleep(50);
@@ -122,6 +121,4 @@ public class ConfigureHSM extends SetupCommon {
 
         return new String(data, 0, data.length);
     }
-
-
 }

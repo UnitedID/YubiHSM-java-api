@@ -16,26 +16,26 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class SystemInfoCmdTest extends SetupCommon {
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -57,6 +57,6 @@ public class SystemInfoCmdTest extends SetupCommon {
 
     @Test
     public void testSystemInfoToString() throws YubiHSMErrorException {
-        assertEquals("Version ", hsm.infoToString().substring(0, 8));
+        assertEquals(hsm.infoToString().substring(0, 8), "Version ");
     }
 }

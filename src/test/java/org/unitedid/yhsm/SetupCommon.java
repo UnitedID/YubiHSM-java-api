@@ -12,13 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @author Stefan Wold <stefan.wold@unitedid.org>
  */
 
 package org.unitedid.yhsm;
 
-import org.junit.*;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.unitedid.yhsm.internal.DeviceHandler;
 
 public class SetupCommon {
@@ -26,13 +25,13 @@ public class SetupCommon {
     public DeviceHandler deviceHandler;
     public int keyHandle = 8192;
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         hsm = new YubiHSM("/dev/ttyACM0", 1);
         deviceHandler = hsm.getRawDevice();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         hsm = null;
         deviceHandler = null;

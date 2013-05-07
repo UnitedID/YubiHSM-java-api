@@ -16,22 +16,22 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotSame;
 
 public class RandomCmdTest extends SetupCommon {
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -42,7 +42,7 @@ public class RandomCmdTest extends SetupCommon {
         byte[] random2 = hsm.getRandom(12);
 
         assertNotSame(random1, random2);
-        assertEquals(12, random1.length);
+        assertEquals(random1.length, 12);
     }
 
 }

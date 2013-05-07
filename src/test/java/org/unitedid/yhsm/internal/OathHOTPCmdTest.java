@@ -16,40 +16,41 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.unitedid.yhsm.internal.Defines.YSM_TEMP_KEY_HANDLE;
 
 
 public class OathHOTPCmdTest extends SetupCommon {
 
     private String nonce = "f1f2f3f4f5f6";
     private String aead;
+    private String aead2;
     private int keyHandle = 8192;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
 
         String seed = "3132333435363738393031323334353637383930";
         aead = hsm.generateOathHotpAEAD(nonce, keyHandle, seed);
         assertTrue(hsm.loadTemporaryKey(nonce, keyHandle, aead));
+
+        seed = "3132333435363738393031323334353637383931";
+        aead2 = hsm.generateOathHotpAEAD(nonce, keyHandle, seed);
+        assertTrue(hsm.loadTemporaryKey(nonce, keyHandle, aead2));
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -64,13 +65,15 @@ public class OathHOTPCmdTest extends SetupCommon {
         testValueList.add(new OathHotpValueMap(4, "a904c900a64b35909874b33e61c5938a8e15ed1c", "338314"));
         testValueList.add(new OathHotpValueMap(30, "543c61f8f9aeb35f6dbc3a6847c3fe288cc0ee4c", "026920"));
 
+        hsm.loadTemporaryKey(nonce, keyHandle, aead);
         for (OathHotpValueMap o : testValueList) {
-            String hmac = hsm.generateHMACSHA1(Utils.longToByteArray(o.getCounter()), Defines.YSM_TEMP_KEY_HANDLE, true, false).get("hash");
-            assertEquals(o.getHmac(), hmac);
-            assertEquals(o.getOtp(), OathHOTPCmd.truncate(hmac, 6));
+            String hmac = hsm.generateHMACSHA1(Utils.longToByteArray(o.getCounter()), YSM_TEMP_KEY_HANDLE, true, false).get("hash");
+            assertEquals(hmac, o.getHmac());
+            assertEquals(OathHOTPCmd.truncate(hmac, 6), o.getOtp());
         }
     }
 
+    //@Test(threadPoolSize = 5, invocationCount = 20)
     @Test
     public void testOathHotpValidation() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         List<OathHotpCodeMap> testCodeList = new ArrayList<OathHotpCodeMap>();
@@ -81,13 +84,23 @@ public class OathHOTPCmdTest extends SetupCommon {
         testCodeList.add(new OathHotpCodeMap(31, 30, "026920", 1));
 
         for (OathHotpCodeMap o : testCodeList) {
-            assertEquals(o.getExpectedCounter(), hsm.validateOathHOTP(hsm, keyHandle, nonce, aead, o.getCounter(), o.getOtp(), o.getLookAhead()));
+            assertEquals(hsm.validateOathHOTP(hsm, keyHandle, nonce, aead, o.getCounter(), o.getOtp(), o.getLookAhead()), o.getExpectedCounter());
+        }
+
+        testCodeList.clear();
+        testCodeList.add(new OathHotpCodeMap(1, 0, "504140", 1));
+        testCodeList.add(new OathHotpCodeMap(4, 0, "272072", 4));
+        testCodeList.add(new OathHotpCodeMap(0, 0, "272072", 3));
+        testCodeList.add(new OathHotpCodeMap(5, 3, "030059", 2));
+        testCodeList.add(new OathHotpCodeMap(31, 30, "479886", 1));
+
+        for (OathHotpCodeMap o : testCodeList) {
+            assertEquals(hsm.validateOathHOTP(hsm, keyHandle, nonce, aead2, o.getCounter(), o.getOtp(), o.getLookAhead()), o.getExpectedCounter());
         }
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMInputException.class)
     public void testOathHotpTruncateHMACLength() throws YubiHSMInputException {
-        thrown.expect(YubiHSMInputException.class);
         OathHOTPCmd.truncate("cccccccccccccccccccccccccccccccccccccccccc", 6);
     }
 }

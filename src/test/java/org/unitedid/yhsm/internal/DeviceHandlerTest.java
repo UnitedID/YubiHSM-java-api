@@ -16,31 +16,32 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.Utils;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
+import static org.unitedid.yhsm.internal.Defines.YSM_ECHO;
 
 public class DeviceHandlerTest extends SetupCommon {
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
 
     @Test
     public void testDrainClearInput() throws YubiHSMErrorException {
-        CommandHandler.execute(deviceHandler, Defines.YSM_ECHO, Utils.addLengthToData("ekoeko".getBytes()), false);
-        assertEquals(9, deviceHandler.available());
+        CommandHandler.execute(deviceHandler, YSM_ECHO, Utils.addLengthToData("ekoeko".getBytes()), false);
+        assertEquals(deviceHandler.available(), 9);
         deviceHandler.drain();
-        assertEquals(0, deviceHandler.available());
+        assertEquals(deviceHandler.available(), 0);
     }
 }

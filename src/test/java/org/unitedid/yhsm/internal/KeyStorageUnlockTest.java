@@ -16,29 +16,22 @@
 
 package org.unitedid.yhsm.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
+
+import static junit.framework.Assert.assertFalse;
+import static org.testng.Assert.*;
 
 public class KeyStorageUnlockTest extends SetupCommon {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }

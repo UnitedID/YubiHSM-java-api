@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright (c) 2013 United ID.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite name="YubiHSM Test Suite">
+    <test name="Configure HSM" preserve-order="true">
+        <classes>
+            <class name="org.unitedid.yhsm.ConfigureHSM" />
+            <class name="org.unitedid.yhsm.internal.KeyStorageUnlockTest" />
+        </classes>
+    </test>
+    <test name="YubiHSM internal" preserve-order="true">
+        <classes>
+            <class name="org.unitedid.yhsm.internal.EchoCmdTest" />
+            <class name="org.unitedid.yhsm.internal.BufferCmdTest" />
+            <class name="org.unitedid.yhsm.internal.DeviceHandlerTest" />
+            <class name="org.unitedid.yhsm.internal.HMACCmdTest" />
+            <class name="org.unitedid.yhsm.internal.SystemInfoCmdTest" />
+            <class name="org.unitedid.yhsm.internal.LoadTemporaryKeyCmdTest" />
+            <class name="org.unitedid.yhsm.internal.OathHOTPCmdTest" />
+            <class name="org.unitedid.yhsm.internal.NonceGetCmdTest" />
+            <class name="org.unitedid.yhsm.internal.RandomCmdTest" />
+            <class name="org.unitedid.yhsm.internal.RandomReseedCmdTest" />
+            <class name="org.unitedid.yhsm.internal.YubikeyOtpDecodeCmdTest" />
+            <class name="org.unitedid.yhsm.internal.AEADCmdTest" />
+            <class name="org.unitedid.yhsm.internal.AESECBCmdTest" />
+        </classes>
+    </test>
+    <test name="YubiHSM Utility" preserve-order="true">
+        <classes>
+            <class name="org.unitedid.yhsm.utility.ModHexTest" />
+            <class name="org.unitedid.yhsm.utility.UtilsTest" />
+        </classes>
+    </test>
+</suite>

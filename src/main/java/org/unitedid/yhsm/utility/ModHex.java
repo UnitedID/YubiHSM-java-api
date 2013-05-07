@@ -64,7 +64,9 @@ public class ModHex {
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i);
             int index = searchList.indexOf(ch);
-            if (index >= 0) {
+            if (index == -1) {
+                throw new IllegalArgumentException(input + " is not properly encoded");
+            } else if (index >= 0) {
                 buf.append(replacementList.charAt(index));
             } else {
                 buf.append(ch);

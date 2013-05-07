@@ -16,32 +16,27 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.Utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.unitedid.yhsm.internal.Defines.*;
+
 
 public class AEADCmdTest extends SetupCommon {
 
     private String nonce = "4d4d4d4d4d4d";
 
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -64,16 +59,15 @@ public class AEADCmdTest extends SetupCommon {
 
     @Test
     public void testGenerateRandomAEAD() throws Exception {
-        int[] bytes = {1, Defines.KEY_SIZE + Defines.UID_SIZE, Defines.YSM_AEAD_MAX_SIZE - Defines.YSM_AEAD_MAC_SIZE};
+        int[] bytes = {1, KEY_SIZE + UID_SIZE, YSM_AEAD_MAX_SIZE - YSM_AEAD_MAC_SIZE};
         for(int num : bytes) {
             String aead = AEADCmd.generateRandomAEAD(deviceHandler, nonce, 4, num).get("aead");
-            assertEquals(num + Defines.YSM_AEAD_MAC_SIZE, Utils.hexToByteArray(aead).length);
+            assertEquals(Utils.hexToByteArray(aead).length, num + YSM_AEAD_MAC_SIZE);
         }
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMCommandFailedException.class)
     public void testGenerateRandomAEADException() throws Exception {
-        thrown.expect(YubiHSMCommandFailedException.class);
         AEADCmd.generateRandomAEAD(deviceHandler, nonce, 4, 255).get("aead");
     }
 
@@ -84,6 +78,6 @@ public class AEADCmdTest extends SetupCommon {
         String expected = "ab9ee1ea245fd11bdfe3fc8a5255de4e8d90b3f6f1f7c97692e0979599de95c5";
         String result = hsm.generateOathHotpAEAD(nonce, 8192, seed);
 
-       assertEquals(expected, result);
+        assertEquals(result, expected);
     }
 }

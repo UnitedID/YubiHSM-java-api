@@ -16,27 +16,22 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
 
 public class RandomReseedCmdTest extends SetupCommon {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -47,9 +42,8 @@ public class RandomReseedCmdTest extends SetupCommon {
         assertNotSame(hsm.getRandom(10), hsm.getRandom(10));
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMInputException.class)
     public void testRandomReseedInputException() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        thrown.expect(YubiHSMInputException.class);
         hsm.randomReseed("AAAA");
     }
 }

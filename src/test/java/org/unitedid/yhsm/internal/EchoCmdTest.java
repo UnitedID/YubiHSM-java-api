@@ -16,25 +16,27 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.*;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class EchoCmdTest extends SetupCommon {
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
 
     @Test
     public void testEchoReturnValidData() throws YubiHSMErrorException {
-        assertEquals("ekoeko", EchoCmd.execute(deviceHandler, "ekoeko"));
+        assertEquals(EchoCmd.execute(deviceHandler, "ekoeko"), "ekoeko");
     }
 }

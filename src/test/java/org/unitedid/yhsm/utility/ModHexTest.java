@@ -16,9 +16,10 @@
 
 package org.unitedid.yhsm.utility;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-import static junit.framework.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
+
 
 public class ModHexTest {
     private final String hex = "cc55115abb";
@@ -26,18 +27,23 @@ public class ModHexTest {
     private final Long decimal = 877600529083L;
 
     @Test
-    public void encodeHex() {
-        assertEquals(modHex, ModHex.encode(hex));
+    public void testEncodeHex() {
+        assertEquals(ModHex.encode(hex), modHex);
     }
 
     @Test
-    public void decodeHex() {
-        assertEquals(hex, ModHex.decode(modHex));
+    public void testDecodeHex() {
+        assertEquals(ModHex.decode(modHex), hex);
     }
 
     @Test
-    public void modHexToDecimal() {
-        assertEquals(decimal, ModHex.toDecimal(modHex));
+    public void testModHexToDecimal() {
+        assertEquals(ModHex.toDecimal(modHex), decimal);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testModHexInvalidInput() {
+        ModHex.encode("xxxx");
     }
 }
 

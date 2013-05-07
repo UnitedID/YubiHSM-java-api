@@ -16,20 +16,16 @@
 
 package org.unitedid.yhsm.internal;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.Utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Fredrik Thulin <fredrik@yubico.com>
@@ -41,19 +37,12 @@ public class YubikeyOtpDecodeCmdTest extends SetupCommon {
     private final String privateId = "534543524554";
     private final String key = "fcacd309a20ce1809c2db257f0e8d6ea";
 
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-
-    @Override
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @Override
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -70,7 +59,7 @@ public class YubikeyOtpDecodeCmdTest extends SetupCommon {
             put("tsHigh", 39);
             put("tsLow", 24133);
         }};
-        assertEquals(expected, result);
+        assertEquals(result, expected);
     }
 
     @Test
@@ -85,14 +74,12 @@ public class YubikeyOtpDecodeCmdTest extends SetupCommon {
             put("tsHigh", 204);
             put("tsLow", 28386);
         }};
-        assertEquals(expected, result);
+        assertEquals(result, expected);
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMCommandFailedException.class,
+          expectedExceptionsMessageRegExp = "Command YSM_AEAD_YUBIKEY_OTP_DECODE failed: YSM_OTP_INVALID")
     public void testYubikeyDecodeInvalid() throws Exception {
-        thrown.expect(YubiHSMCommandFailedException.class);
-        thrown.expectMessage("Command YSM_AEAD_YUBIKEY_OTP_DECODE failed: YSM_OTP_INVALID");
-
         byte[] secretBA = Utils.hexToByteArray(new String(key + privateId));
         String aead = AEADCmd.generateAEAD(deviceHandler, publicId, keyHandle, secretBA).get("aead");
         hsm.decodeYubikeyOtp(publicId, keyHandle, aead, "000102030405060708090a0b0c0d0e0f");

@@ -16,16 +16,17 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
+import static org.unitedid.yhsm.internal.Defines.YSM_HMAC_SHA1_FINAL;
+import static org.unitedid.yhsm.internal.Defines.YSM_HMAC_SHA1_RESET;
+import static org.unitedid.yhsm.internal.Defines.YSM_SHA1_HASH_SIZE;
 
 public class HMACCmdTest extends SetupCommon {
 
@@ -34,79 +35,74 @@ public class HMACCmdTest extends SetupCommon {
     private String expectedNextHash = "0000000000000000000000000000000000000000";
     private int keyHandle = 12337;
 
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
 
     @Test
     public void testHMACSHA1WithNumericFlags() throws Exception {
-        byte flags = Defines.YSM_HMAC_SHA1_RESET | Defines.YSM_HMAC_SHA1_FINAL;
+        byte flags = YSM_HMAC_SHA1_RESET | YSM_HMAC_SHA1_FINAL;
         Map<String, String> result = hsm.generateHMACSHA1(data, keyHandle, flags, true, false);
 
-        assertEquals(expectedHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedHash);
     }
 
     @Test
     public void testHMACSHA1Next() throws Exception {
         Map<String, String> result = hsm.generateHMACSHA1(data.substring(0, 3), keyHandle, false, false);
-        assertEquals(expectedNextHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedNextHash);
         result = hsm.generateHMACSHA1Next(data.substring(3), keyHandle, true, false);
-        assertEquals(expectedHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedHash);
     }
 
     @Test
     public void testHMACSHA1NextNext() throws Exception {
         Map<String, String> result = hsm.generateHMACSHA1("", keyHandle, false, false);
-        assertEquals(expectedNextHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedNextHash);
         result = hsm.generateHMACSHA1Next(data.substring(0, 3), keyHandle, false, false);
-        assertEquals(expectedNextHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedNextHash);
         result = hsm.generateHMACSHA1Next(data.substring(3), keyHandle, true, false);
-        assertEquals(expectedHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedHash);
     }
 
     @Test
     public void testHMACSHA1Interupted() throws Exception {
         Map<String, String> result = hsm.generateHMACSHA1(data.substring(0, 3), keyHandle, false, false);
-        assertEquals(expectedNextHash, result.get("hash"));
-        assertEquals("123qwe", hsm.echo("123qwe"));
+        assertEquals(result.get("hash"), expectedNextHash);
+        assertEquals(hsm.echo("123qwe"), "123qwe");
         result = hsm.generateHMACSHA1Next(data.substring(3), keyHandle, true, false);
-        assertEquals(expectedHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedHash);
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMCommandFailedException.class,
+          expectedExceptionsMessageRegExp = "Command YSM_HMAC_SHA1_GENERATE failed: YSM_FUNCTION_DISABLED")
     public void testHMACSHA1InvalidKeyHandle() throws Exception {
-        thrown.expect(YubiHSMCommandFailedException.class);
-        thrown.expectMessage("Command YSM_HMAC_SHA1_GENERATE failed: YSM_FUNCTION_DISABLED");
         hsm.generateHMACSHA1(data, 1, true, false);
     }
 
     @Test
     public void testHMACSHA1ToBuffer() throws Exception {
-        assertEquals(0, hsm.loadRandomBufferData(0, 0));
+        assertEquals(hsm.loadRandomBufferData(0, 0), 0);
         hsm.generateHMACSHA1(data, keyHandle, true, true);
-        assertEquals(Defines.YSM_SHA1_HASH_SIZE, hsm.loadRandomBufferData(0, 1));
+        assertEquals(hsm.loadRandomBufferData(0, 1), YSM_SHA1_HASH_SIZE);
     }
 
     @Test
     public void testHMACSHA1NextWithBuffer() throws Exception {
-        assertEquals(0, hsm.loadRandomBufferData(0, 0));
-        assertEquals(0, hsm.loadRandomBufferData(0, 1));
+        assertEquals(hsm.loadRandomBufferData(0, 0), 0);
+        assertEquals(hsm.loadRandomBufferData(0, 1), 0);
 
         Map<String, String> result = hsm.generateHMACSHA1("", keyHandle, false, false);
-        assertEquals(expectedNextHash, result.get("hash"));
+        assertEquals(result.get("hash"), expectedNextHash);
         hsm.generateHMACSHA1Next(data.substring(0, 3), keyHandle, false, false);
         hsm.generateHMACSHA1Next(data.substring(3), keyHandle, false, false);
         hsm.generateHMACSHA1Next("", keyHandle, true, true);
-        assertEquals(Defines.YSM_SHA1_HASH_SIZE, hsm.loadRandomBufferData(0, 1));
+        assertEquals(hsm.loadRandomBufferData(0, 1), YSM_SHA1_HASH_SIZE);
     }
 }

@@ -16,29 +16,24 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
 public class AESECBCmdTest extends SetupCommon {
     private int khEncrypt = 4097; // 0x1001
     private int khDecrypt = 4097; // 0x1001
     private int khCompare = 4097; // 0x1001
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -50,21 +45,19 @@ public class AESECBCmdTest extends SetupCommon {
         assertNotSame(plaintext, cipherText);
 
         String decrypted = hsm.decryptAES_ECB(cipherText, khDecrypt);
-        assertEquals(plaintext, decrypted);
+        assertEquals(decrypted, plaintext);
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMInputException.class,
+          expectedExceptionsMessageRegExp = "Argument 'plaintext' is too long, expected max 16 but got 26")
     public void testEncryptInputException() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        thrown.expect(YubiHSMInputException.class);
-        thrown.expectMessage("Argument 'plaintext' is too long, expected max 16 but got 26");
         String aTooLongString = "abcdefghijklmonpqrstuvwxyz";
         hsm.encryptAES_ECB(aTooLongString, khEncrypt);
     }
 
-    @Test
+    @Test(expectedExceptions = YubiHSMInputException.class,
+          expectedExceptionsMessageRegExp = "Wrong size of argument 'cipherText', expected 16 but got 19")
     public void testDecryptInputException() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        thrown.expect(YubiHSMInputException.class);
-        thrown.expectMessage("Wrong size of argument 'cipherText', expected 16 but got 19");
         String aTooLongCipher = "112233445566778899aaccddeeff1122334455";
         hsm.decryptAES_ECB(aTooLongCipher, khDecrypt);
     }

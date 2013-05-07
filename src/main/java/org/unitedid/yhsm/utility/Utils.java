@@ -107,11 +107,11 @@ public class Utils {
 
     public static byte[] hexToByteArray(String hex) throws YubiHSMInputException {
         if (hex.length() % 2 != 0) {
-            throw new YubiHSMInputException("Invalid hex string (" + hex + ")!");
+            throw new YubiHSMInputException("Invalid hex string '" + hex + "'");
         }
         for (int i = 0; i < hex.length(); i++) {
             if (Character.digit(hex.charAt(i), 16) < 0) {
-                throw new YubiHSMInputException("Invalid hex string (" + hex + ")!");
+                throw new YubiHSMInputException("Invalid hex string '" + hex + "'");
             }
         }
         byte data[] = new byte[hex.length()/2];

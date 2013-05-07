@@ -16,21 +16,21 @@
 
 package org.unitedid.yhsm.internal;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
-import static junit.framework.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class NonceGetCmdTest extends SetupCommon {
 
-    @Before
+    @BeforeTest
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @AfterTest
     public void tearDown() throws Exception {
         super.tearDown();
     }
@@ -39,16 +39,16 @@ public class NonceGetCmdTest extends SetupCommon {
     public void testNonceGet() throws YubiHSMErrorException, YubiHSMCommandFailedException {
         Nonce nonce1 = hsm.getNonce((short) 1);
         Nonce nonce2 = hsm.getNonce((short) 1);
-        assertEquals(nonce1.getNonceInt() + 1, nonce2.getNonceInt());
+        assertEquals(nonce2.getNonceInt(), nonce1.getNonceInt() + 1);
 
         Nonce nonce3 = hsm.getNonce((short) 9);
-        assertEquals(nonce2.getNonceInt() +1, nonce3.getNonceInt());
+        assertEquals(nonce3.getNonceInt(), nonce2.getNonceInt() + 1);
 
         Nonce nonce4 = hsm.getNonce((short) 1);
-        assertEquals(nonce3.getNonceInt() + 9, nonce4.getNonceInt());
+        assertEquals(nonce4.getNonceInt(), nonce3.getNonceInt() + 9);
 
         Nonce nonce5 = hsm.getNonce((short) 0);
         Nonce nonce6 = hsm.getNonce((short) 0);
-        assertEquals(nonce5.getNonceInt(), nonce6.getNonceInt());
+        assertEquals(nonce6.getNonceInt(), nonce5.getNonceInt());
     }
 }

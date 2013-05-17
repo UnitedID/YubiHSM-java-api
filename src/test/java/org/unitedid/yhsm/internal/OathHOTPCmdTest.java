@@ -73,8 +73,7 @@ public class OathHOTPCmdTest extends SetupCommon {
         }
     }
 
-    //@Test(threadPoolSize = 5, invocationCount = 20)
-    @Test
+    @Test(threadPoolSize = 5, invocationCount = 20)
     public void testOathHotpValidation() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         List<OathHotpCodeMap> testCodeList = new ArrayList<OathHotpCodeMap>();
         testCodeList.add(new OathHotpCodeMap(1, 0, "755224", 1));

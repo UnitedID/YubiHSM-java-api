@@ -17,12 +17,11 @@
 package org.unitedid.yhsm.internal;
 
 import org.unitedid.yhsm.YubiHSM;
-import org.unitedid.yhsm.utility.Utils;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
-import static org.unitedid.yhsm.internal.Defines.*;
+import static org.unitedid.yhsm.internal.Defines.YSM_TEMP_KEY_HANDLE;
 import static org.unitedid.yhsm.utility.Utils.*;
 
 /** <code>OathHOTPCmd</code> implements OATH-HOTP OTP validation*/
@@ -46,7 +45,7 @@ public class OathHOTPCmd {
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    public static int validateOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+    public static synchronized int validateOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
         int otpLength = otp.trim().length();
         if (otpLength < 6 || otpLength > 8) {
             throw new YubiHSMInputException("OTP not of required length, should be between 6-8 digits long but was " + otpLength);

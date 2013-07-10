@@ -34,7 +34,7 @@ public class YubikeyOtpDecodeCmd {
      * Load the content of an AEAD into the phantom key handle 0xffffffff.
      *
      * @param device the device handler
-     * @param nonce the nonce
+     * @param publicId the public id
      * @param keyHandle the key handle with permission to use YSM_TEMP_KEY_LOAD
      * @param aead the AEAD to load into the phantom key handle
      * @return returns true if the AEAD was successfully loaded
@@ -54,7 +54,9 @@ public class YubikeyOtpDecodeCmd {
     /**
      *  Parse the response from the YubiHSM for a previous command.
      *
-     * @param result the result from the last command
+     * @param data the result from the last command
+     * @param publicIdBA the public id in byte array format
+     * @param keyHandle the key handle with permission to use YSM_TEMP_KEY_LOAD
      * @return boolean indicating success
      * @throws YubiHSMCommandFailedException command failed exception
      */

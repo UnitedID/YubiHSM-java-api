@@ -64,6 +64,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>3.0.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>gnu.io</groupId>
             <artifactId>RXTXcomm</artifactId>
             <version>2.2pre2</version>

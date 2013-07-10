@@ -45,8 +45,8 @@ public class ConfigureHSM extends SetupCommon {
             System.out.println(runCommand("hsm ffffffff\r\r2f6af1e667456bb94528e7987344515b\ryes", true));
         } else {
             char esc = 0x1b;
-            System.out.println(runCommand("hsm ffffffff\r\rftftftcccccb\r\r2f6af1e667456bb94528e7987344515b\ryes", true));
-            System.out.println(runCommand("dbload\r00001,ftftftcccccb,010203040506,0102030405060708090a0b0c0d0e0f\r\r" + esc, false));
+            System.out.println(runCommand("hsm ffffffff\r" + configPassPhrase + "\r" + adminYubikey + "\r\r" + hsmPassPhrase + "\ryes", true));
+            System.out.println(runCommand("dbload\r00001," + adminYubikey + ",f0f1f2f3f4f5," + duplicateStr("4d", 16) + ",\r" + esc, false));
         }
         System.out.println(runCommand("sysinfo", true));
         hsm.drainData();
@@ -74,7 +74,8 @@ public class ConfigureHSM extends SetupCommon {
         addKey(0xe000, 0x1001, duplicateStr("1001", 16));
         addKey(0xffffffff, 0x2000, duplicateStr("2000", 16));
         addKey(0x10000, 0x3031, "303132333435363738393a3b3c3d3e3f40414243000000000000000000000000");
-
+        addKey(0x20000002, 0x20000002, duplicateStr("20000002", 8));
+        addKey(0x20000008, 0x20000008, duplicateStr("20000008", 8));
     }
 
     private void addKey(int flags, int num, String key) throws Exception {
@@ -113,8 +114,8 @@ public class ConfigureHSM extends SetupCommon {
                 }
             }
             data = Utils.concatAllArrays(data, b);
-            if ((new String(data, 0, data.length)).endsWith("NO_CFG> ") ||
-                (new String(data, 0, data.length)).endsWith("HSM> ")) {
+            String lines[] = new String(data, 0, data.length).split("\\n");
+            if (lines[lines.length - 1].matches("^(NO_CFG|WSAPI|HSM).*> .*")) {
                 break;
             }
         }

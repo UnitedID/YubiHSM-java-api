@@ -20,8 +20,10 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
+import org.unitedid.yhsm.utility.ModHex;
 
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.testng.Assert.*;
 
 public class KeyStorageUnlockTest extends SetupCommon {
@@ -36,19 +38,20 @@ public class KeyStorageUnlockTest extends SetupCommon {
         super.tearDown();
     }
 
-    @Test
+    @Test(priority = 1)
     public void failedUnlockHsm() throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         assertFalse(hsm.unlock("1111"));
     }
 
-    @Test
+    @Test(priority = 2)
     public void unlockHsm() throws Exception {
-        assertTrue(hsm.unlock("2f6af1e667456bb94528e7987344515b"));
+        assertTrue(hsm.unlock(hsmPassPhrase));
     }
 
-    @Test
+    @Test(priority = 3)
     public void otpUnlockHsm() throws Exception {
         /* order is crucial here, that's why these are not made into separate tests */
+        String yubiKeyPublicId = ModHex.decode(adminYubikey);
 
         if (new Integer(hsm.info().get("major")) > 0) {
             /* Incorrect public id */
@@ -60,21 +63,21 @@ public class KeyStorageUnlockTest extends SetupCommon {
             }
 
             /* Right public id, wrong OTP */
-            assertFalse(hsm.unlockOtp("4d4d4d000001", "ffaaffaaffaaffaaffaaffaaffaaffaa"));
+            assertFalse(hsm.unlockOtp(yubiKeyPublicId, "ffaaffaaffaaffaaffaaffaaffaaffaa"));
 
             /* Right public id, right OTP (for counter values 00002/001) */
-            assertTrue(hsm.unlockOtp("4d4d4d000001", "5f8e12aa57abb1677b88606eb2af63b9"));
+            assertTrue(hsm.unlockOtp(yubiKeyPublicId, "b2eabea788e74b233e4c847a619c874a"));
 
             /* Replay, will lock the HSM again */
             try {
-                hsm.unlockOtp("4d4d4d000001", "5f8e12aa57abb1677b88606eb2af63b9");
+                hsm.unlockOtp(yubiKeyPublicId, "b2eabea788e74b233e4c847a619c874a");
                 fail("unlockOtp with same OTP not expected to work");
             } catch (YubiHSMCommandFailedException e) {
                 assertEquals("Command YSM_HSM_UNLOCK failed: YSM_OTP_REPLAY", e.getMessage());
             }
 
             /* Right public id, new OTP (counter values 00002/002) */
-            assertTrue(hsm.unlockOtp("4d4d4d000001", "083aa5cd1a278ed2e9eb46971b479725"));
+            assertTrue(hsm.unlockOtp(yubiKeyPublicId, "5cd779b6892bf84d683252c67d875244"));
         }
     }
 }

@@ -16,6 +16,8 @@
 
 package org.unitedid.yhsm.internal;
 
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.testng.SkipException;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -53,22 +55,39 @@ public class AEADCmdTest extends SetupCommon {
          * array and then back into a String.
          */
         byte[] secretBA = Utils.hexToByteArray(new String("ec1c263a5d9bd270db0b19b18ca5396b"));
-        String aead = hsm.generateAEAD(nonce, 8192, secretBA).get("aead");
-        assertTrue(hsm.validateAEAD(nonce, 8192, aead, secretBA));
+        String aead = hsm.generateAEAD(nonce, 0x00002000, secretBA).get("aead");
+        assertTrue(hsm.validateAEAD(nonce, 0x00002000, aead, secretBA));
+    }
+
+    @Test
+    public void testGenerateAEADBlocked() throws Exception {
+        DefaultArtifactVersion minVersion = new DefaultArtifactVersion("1.0.4");
+        DefaultArtifactVersion curVersion = new DefaultArtifactVersion(hsm.getHsmVersion());
+
+        if (curVersion.compareTo(minVersion) == -1) {
+            throw new SkipException("This test requires firmware 1.0.4 or later");
+        }
+
+        try {
+            byte[] secretBA = Utils.hexToByteArray(new String("ec1c263a5d9bd270db0b19b18ca5396b"));
+            hsm.generateAEAD(nonce, 0x00000002, secretBA);
+        } catch (YubiHSMCommandFailedException e) {
+            assertEquals("Command YSM_AEAD_GENERATE failed: YSM_FUNCTION_DISABLED", e.getMessage());
+        }
     }
 
     @Test
     public void testGenerateRandomAEAD() throws Exception {
         int[] bytes = {1, KEY_SIZE + UID_SIZE, YSM_AEAD_MAX_SIZE - YSM_AEAD_MAC_SIZE};
         for(int num : bytes) {
-            String aead = AEADCmd.generateRandomAEAD(deviceHandler, nonce, 4, num).get("aead");
+            String aead = hsm.generateRandomAEAD(nonce, 0x20000008, num).get("aead");
             assertEquals(Utils.hexToByteArray(aead).length, num + YSM_AEAD_MAC_SIZE);
         }
     }
 
     @Test(expectedExceptions = YubiHSMCommandFailedException.class)
     public void testGenerateRandomAEADException() throws Exception {
-        AEADCmd.generateRandomAEAD(deviceHandler, nonce, 4, 255).get("aead");
+        hsm.generateRandomAEAD(nonce, 4, 255).get("aead");
     }
 
     @Test

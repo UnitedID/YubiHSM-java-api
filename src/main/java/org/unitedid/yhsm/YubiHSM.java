@@ -79,9 +79,8 @@ public class YubiHSM  {
      * Get the firmware version and unique ID from the YubiHSM.
      *
      * @return a map with version, protocol and unique ID
-     * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
-    public Map<String, String> info() throws YubiHSMErrorException {
+    public Map<String, String> info() {
         return info;
     }
 
@@ -89,12 +88,20 @@ public class YubiHSM  {
      * Get the firmware version and unique ID from the YubiHSM (string representation).
      *
      * @return a string with version, protocol and unique ID
-     * @throws YubiHSMErrorException if the YubiHSM info command fail
      */
-    public String infoToString() throws YubiHSMErrorException {
+    public String infoToString() {
         return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s", info.get("major"), info.get("minor"),
                 info.get("build"), info.get("protocol"),
                 info.get("sysid"));
+    }
+
+    /**
+     * Get the firmware version from the YubiHSM (string representation).
+     *
+     * @return a string with firmware version
+     */
+    public String getHsmVersion() {
+        return String.format("%s.%s.%s", info.get("major"), info.get("minor"), info.get("build"));
     }
 
     /**

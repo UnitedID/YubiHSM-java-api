@@ -53,7 +53,7 @@ public class KeyStorageUnlockTest extends SetupCommon {
         /* order is crucial here, that's why these are not made into separate tests */
         String yubiKeyPublicId = ModHex.decode(adminYubikey);
 
-        if (new Integer(hsm.info().get("major")) > 0) {
+        if (hsm.getInfo().getMajorVersion() > 0) {
             /* Incorrect public id */
             try {
                 hsm.unlockOtp("010000000000", "ffaaffaaffaaffaaffaaffaaffaaffaa");

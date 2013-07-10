@@ -34,14 +34,12 @@ public class ConfigureHSM extends SetupCommon {
 
     @Test
     public void testConfigureHSM() throws Exception {
-        int major_version = new Integer(hsm.info().get("major"));
-
         System.out.println("Exiting HSM monitor mode (requires YubiHSM in 'debug' mode)");
         hsm.exitMonitorDebugMode();
-        System.out.println("Configuring YubiHSM for test suite (" + hsm.infoToString() + ")");
+        System.out.println("Configuring YubiHSM for test suite (" + hsm.getInfo().getSystemInfo() + ")");
         hsm.drainData();
         System.out.println(runCommand("sysinfo", true));
-        if (major_version == 0) {
+        if (hsm.getInfo().getMajorVersion() == 0) {
             System.out.println(runCommand("hsm ffffffff\r\r2f6af1e667456bb94528e7987344515b\ryes", true));
         } else {
             char esc = 0x1b;
@@ -52,7 +50,7 @@ public class ConfigureHSM extends SetupCommon {
         hsm.drainData();
         addKeys();
         System.out.println(runCommand("keylist", true));
-        if (major_version != 0)
+        if (hsm.getInfo().getMajorVersion() != 0)
             System.out.println(runCommand("keycommit", true));
         System.out.println(runCommand("dblist", true));
         deviceHandler.write("exit\r".getBytes());

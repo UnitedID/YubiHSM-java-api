@@ -24,23 +24,98 @@ import static org.unitedid.yhsm.utility.Utils.*;
 
 public class SystemInfoCmd {
 
-    private SystemInfoCmd() {}
+    private int majorVersion;
+    private int minorVersion;
+    private int buildVersion;
+    private String protocol;
+    private String sysId;
 
-    public static Map<String, String> execute(DeviceHandler device) throws YubiHSMErrorException {
-        byte[] empty = new byte[0];
-        byte[] result = CommandHandler.execute(device, YSM_SYSTEM_INFO_QUERY, empty, true);
-
-        return parseResult(result);
+    /**
+     * Constructor to initiate a class with HSM system information
+     *
+     * @param device the deviceHandler
+     * @throws YubiHSMErrorException
+     */
+    public SystemInfoCmd(DeviceHandler device) throws YubiHSMErrorException {
+        parseResult(CommandHandler.execute(device, YSM_SYSTEM_INFO_QUERY, new byte[0], true));
     }
 
-    private static Map<String, String> parseResult(byte[] data) {
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("major", String.valueOf(data[0]));
-        result.put("minor", String.valueOf(data[1]));
-        result.put("build", String.valueOf(data[2]));
-        result.put("protocol", String.valueOf(data[3]));
-        result.put("sysid", "0x" + byteArrayToHex(new String(data, 4, 12).getBytes()));
+    /**
+     * Gets the major version
+     *
+     * @return the major version
+     */
+    public int getMajorVersion() {
+        return majorVersion;
+    }
 
-        return result;
+    /**
+     * Gets the minor version
+     *
+     * @return the minor version
+     */
+    public int getMinorVersion() {
+        return minorVersion;
+    }
+
+    /**
+     * Gets the build version
+     *
+     * @return the build version
+     */
+    public int getBuildVersion() {
+        return buildVersion;
+    }
+
+    /**
+     * Gets the protocol version
+     *
+     * @return the protocol version
+     */
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    /**
+     * Gets the unique id of the device
+     *
+     * @return the unique id
+     */
+    public String getSysId() {
+        return sysId;
+    }
+
+    /**
+     * Gets the version in a string representation
+     *
+     * @return the version
+     */
+    public String getVersion() {
+        return String.format("%s.%s.%s", majorVersion, minorVersion, buildVersion);
+    }
+
+    /**
+     * Gets the version, protocol and unique id in a string representation
+     *
+     * @return the device system information
+     */
+    public String getSystemInfo() {
+        return String.format("Version %s.%s.%s  Protocol=%s  SysId: %s",
+                majorVersion, minorVersion, buildVersion, protocol, sysId);
+    }
+
+
+    /**
+     * Parses the system info query result from the HSM
+     *
+     * @param data the result from the YSM_SYSTEM_INFO_QUERY
+     */
+    private void parseResult(byte[] data) {
+        majorVersion =  new Integer(String.valueOf(data[0]));
+        minorVersion = new Integer(String.valueOf(data[1]));
+        buildVersion = new Integer(String.valueOf(data[2]));
+        protocol = String.valueOf(data[3]);
+        sysId = "0x" + byteArrayToHex(new String(data, 4, 12).getBytes());
     }
 }

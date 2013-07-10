@@ -54,7 +54,7 @@ public class AEADCmdTest extends SetupCommon {
         /* Test using 8-bit data that can't be converted from hex-string to byte
          * array and then back into a String.
          */
-        byte[] secretBA = Utils.hexToByteArray(new String("ec1c263a5d9bd270db0b19b18ca5396b"));
+        byte[] secretBA = Utils.hexToByteArray("ec1c263a5d9bd270db0b19b18ca5396b");
         String aead = hsm.generateAEAD(nonce, 0x00002000, secretBA).get("aead");
         assertTrue(hsm.validateAEAD(nonce, 0x00002000, aead, secretBA));
     }
@@ -62,14 +62,14 @@ public class AEADCmdTest extends SetupCommon {
     @Test
     public void testGenerateAEADBlocked() throws Exception {
         DefaultArtifactVersion minVersion = new DefaultArtifactVersion("1.0.4");
-        DefaultArtifactVersion curVersion = new DefaultArtifactVersion(hsm.getHsmVersion());
+        DefaultArtifactVersion curVersion = new DefaultArtifactVersion(hsm.getInfo().getVersion());
 
         if (curVersion.compareTo(minVersion) == -1) {
             throw new SkipException("This test requires firmware 1.0.4 or later");
         }
 
         try {
-            byte[] secretBA = Utils.hexToByteArray(new String("ec1c263a5d9bd270db0b19b18ca5396b"));
+            byte[] secretBA = Utils.hexToByteArray("ec1c263a5d9bd270db0b19b18ca5396b");
             hsm.generateAEAD(nonce, 0x00000002, secretBA);
         } catch (YubiHSMCommandFailedException e) {
             assertEquals("Command YSM_AEAD_GENERATE failed: YSM_FUNCTION_DISABLED", e.getMessage());

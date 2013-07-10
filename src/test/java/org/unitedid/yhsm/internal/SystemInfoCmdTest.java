@@ -21,12 +21,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 public class SystemInfoCmdTest extends SetupCommon {
 
@@ -41,22 +36,7 @@ public class SystemInfoCmdTest extends SetupCommon {
     }
 
     @Test
-    public void testSystemInfo() throws YubiHSMErrorException {
-        Map<String, String> result = hsm.info();
-        List<String> expected = new ArrayList<String>();
-        expected.add("major");
-        expected.add("minor");
-        expected.add("build");
-        expected.add("protocol");
-        expected.add("sysid");
-
-        for (String e : expected) {
-            assertTrue(result.containsKey(e));
-        }
-    }
-
-    @Test
     public void testSystemInfoToString() throws YubiHSMErrorException {
-        assertEquals(hsm.infoToString().substring(0, 8), "Version ");
+        assertEquals(hsm.getInfo().getSystemInfo().substring(0, 8), "Version ");
     }
 }

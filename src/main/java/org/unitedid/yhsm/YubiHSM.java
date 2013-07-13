@@ -55,11 +55,24 @@ public class YubiHSM  {
      * Constructor
      *
      * @param device the YubiHSM device name ie /dev/ttyACM0
-     * @param timeout the command read timeout
+     * @param timeout the command read timeout (default is 0.5 sec)
      * @throws YubiHSMErrorException if the YubiHSM reset command fail
      */
     public YubiHSM(String device, float timeout) throws YubiHSMErrorException {
-        deviceHandler = DeviceHandlerFactory.get(device, timeout);
+        deviceHandler = DeviceHandlerFactory.get(device);
+        deviceHandler.setTimeout(timeout);
+        CommandHandler.reset(deviceHandler);
+        info = new SystemInfoCmd(deviceHandler);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param device the YubiHSM device name ie /dev/ttyACM0
+     * @throws YubiHSMErrorException if the YubiHSM reset command fail
+     */
+    public YubiHSM(String device) throws YubiHSMErrorException {
+        deviceHandler = DeviceHandlerFactory.get(device);
         CommandHandler.reset(deviceHandler);
         info = new SystemInfoCmd(deviceHandler);
     }

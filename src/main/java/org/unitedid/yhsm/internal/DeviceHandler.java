@@ -39,15 +39,14 @@ public class DeviceHandler {
     private int readBytes = 0;
     private int writtenBytes = 0;
 
-    private float timeout;
+    private float timeout = 0.5f;
 
     /**
      * Constructor
      *
      * @param deviceName the YubiHSM device name
-     * @param timeout the timeout in seconds
      */
-    DeviceHandler(String deviceName, float timeout) {
+    DeviceHandler(String deviceName) throws YubiHSMErrorException {
         try {
             System.setProperty("gnu.io.rxtx.SerialPorts", deviceName); // Fix an issue for people running debian / ubuntu
             CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(deviceName);
@@ -56,15 +55,14 @@ public class DeviceHandler {
             device.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             writeStream = device.getOutputStream();
             readStream = device.getInputStream();
-            this.timeout = timeout;
         } catch (NoSuchPortException e) {
-            e.printStackTrace();
+            throw new YubiHSMErrorException("Failed to open device " + deviceName, e);
         } catch (PortInUseException e ) {
-            e.printStackTrace();
+            throw new YubiHSMErrorException("Failed to open device " + deviceName, e);
         } catch (UnsupportedCommOperationException e) {
-            e.printStackTrace();
+            throw new YubiHSMErrorException("Failed to open device " + deviceName, e);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new YubiHSMErrorException("Failed to open device " + deviceName, e);
         }
     }
 
@@ -122,6 +120,10 @@ public class DeviceHandler {
 
     public float getTimeout() {
         return timeout;
+    }
+
+    public void setTimeout(float timeout) {
+        this.timeout = timeout;
     }
 
     public Object clone() throws CloneNotSupportedException

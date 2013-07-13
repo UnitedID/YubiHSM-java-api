@@ -30,11 +30,11 @@ public class DeviceHandlerFactory {
 
     private DeviceHandlerFactory() {}
 
-    public static DeviceHandler get(String device, float timeout) {
+    public static DeviceHandler get(String device) throws YubiHSMErrorException {
         synchronized (deviceHandlerFactoryMap) {
             DeviceHandler deviceHandler = deviceHandlerFactoryMap.get(device);
             if (deviceHandler == null) {
-                deviceHandler = new DeviceHandler(device, timeout);
+                deviceHandler = new DeviceHandler(device);
                 deviceHandlerFactoryMap.put(device, deviceHandler);
             }
             return deviceHandler;

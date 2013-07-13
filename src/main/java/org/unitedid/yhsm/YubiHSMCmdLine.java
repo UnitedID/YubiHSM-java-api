@@ -20,13 +20,24 @@ import org.apache.commons.cli.*;
 import org.unitedid.yhsm.internal.YubiHSMCommandFailedException;
 import org.unitedid.yhsm.internal.YubiHSMErrorException;
 import org.unitedid.yhsm.internal.YubiHSMInputException;
+import org.unitedid.yhsm.utility.ModHex;
+import org.unitedid.yhsm.utility.Utils;
 
-import java.util.Scanner;
+import java.io.Console;
 
 public class YubiHSMCmdLine {
 
     /** Debug output */
     private static boolean debug = false;
+
+    /** HSM default device name */
+    private static String deviceName = "/dev/ttyACM0";
+
+    /** HSM device */
+    private static YubiHSM hsm;
+
+    /** Unlock using OTP, if HSM supports it */
+    private static boolean useOtp = true;
 
     /** Private constructor */
     private YubiHSMCmdLine() {}
@@ -44,24 +55,29 @@ public class YubiHSMCmdLine {
 
     /**
      * Prompts for HSM key storage password on the command line.
-     *
-     * @param deviceName the YubiHSM device name (ex /dev/ttyACM0)
      */
-    public static void runUnlock(String deviceName) {
+    public static void runUnlock() {
         try {
-            YubiHSM hsm = new YubiHSM(deviceName, 1);
+            hsm = new YubiHSM(deviceName, 1);
 
-            String password;
-            Scanner in = new Scanner(System.in);
-            System.out.print("Please enter HSM password: ");
-            password = in.nextLine();
-            in.close();
+            Console in = System.console();
+            if (in == null) {
+                System.out.println("Failed to open system console.");
+                System.exit(1);
+            }
 
-            if (hsm.keyStorageUnlock(password)) {
+            String otp = null;
+            String password = new String(in.readPassword("Please enter HSM password: "));
+            if (hsm.getInfo().getMajorVersion() > 0 && useOtp) {
+                otp = ModHex.decode(new String(in.readPassword("Please enter admin YubiKey OTP: ")));
+            }
+
+            if (unlock(password, otp)) {
                 System.out.println("YubiHSM " + deviceName + " was successfully unlocked.");
             } else {
                 System.out.println("Unlock failed, bad password.");
             }
+
         } catch (YubiHSMCommandFailedException e) {
             System.out.println("Unlock command failed with the reason: " + e.getMessage());
         } catch (YubiHSMInputException e) {
@@ -88,14 +104,12 @@ public class YubiHSMCmdLine {
         options.addOption("d", "debug", false, "Debug output");
         options.addOption("D", "device", true, "YubiHSM device name, default is /dev/ttyACM0");
         options.addOption("u", "unlock-hsm", false, "Unlock YubiHSM key storage");
+        options.addOption("n", "no-otp", false, "Don't ask for OTP");
 
         if (args.length < 1) {
             printUsage(options);
             System.exit(0);
         }
-
-        /* Defaults */
-        String deviceName = "/dev/ttyACM0";
 
         try {
             CommandLine cmdLine = parser.parse(options, args);
@@ -113,8 +127,11 @@ public class YubiHSMCmdLine {
                 deviceName = cmdLine.getOptionValue("D");
             }
 
-            if (cmdLine.hasOption("u")) {
-                runUnlock(deviceName);
+            if (cmdLine.hasOption("u") || cmdLine.hasOption("n")) {
+                if (cmdLine.hasOption("n")) {
+                    useOtp = false;
+                }
+                runUnlock();
             } else {
                 printUsage(options);
             }
@@ -124,5 +141,37 @@ public class YubiHSMCmdLine {
             System.exit(1);
         }
         System.exit(0);
+    }
+
+    /**
+     * Private function that handles the YubiHSM unlock/storage decrypt logic
+     *
+     * @param password the password in hex format
+     * @param otp the YubiKey OTP string in hex format
+     * @return true if YubiHSM was successfully unlocked, false if unlock failed
+     * @throws YubiHSMInputException
+     * @throws YubiHSMCommandFailedException
+     * @throws YubiHSMErrorException
+     */
+    private static Boolean unlock(String password, String otp) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        if (hsm.getInfo().getMajorVersion() == 0) {
+            if (hsm.keyStorageUnlock(password)) {
+                return true;
+            }
+        } else {
+            if (useOtp) {
+                if (otp == null || otp.isEmpty()) {
+                    throw new IllegalArgumentException("Invalid OTP");
+                }
+                String publicId = Utils.getYubiKeyPublicId(otp);
+                String key = Utils.getYubiKeyOtp(otp);
+                if (hsm.keyStoreDecrypt(password) && hsm.unlockOtp(publicId, key)) {
+                    return true;
+                }
+            } else if (hsm.keyStoreDecrypt(password)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

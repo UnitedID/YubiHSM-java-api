@@ -183,6 +183,20 @@ public class Utils {
         };
     }
 
+    public static String getYubiKeyPublicId(String otp) {
+        if ((otp == null) || (otp.length() < 32)) {
+            throw new IllegalArgumentException("OTP is too short");
+        }
+        return otp.substring(0, otp.length() - 32);
+    }
+
+    public static String getYubiKeyOtp(String otp) {
+        if ((otp == null) || (otp.length() < 32)) {
+            throw new IllegalArgumentException("OTP is too short");
+        }
+        return otp.substring(otp.length() - 32);
+    }
+
     public Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }

@@ -45,7 +45,7 @@ public class YubiHSM  {
     /** The device handler */
     private DeviceHandler deviceHandler;
 
-    /** The hash length, default is 20 */
+    /** The hash length used when generating or validating an AEAD, default length is 20 */
     public static int minHashLength = 20;
 
     /** YubiHSM sysinfo cache */
@@ -61,8 +61,7 @@ public class YubiHSM  {
     public YubiHSM(String device, float timeout) throws YubiHSMErrorException {
         deviceHandler = DeviceHandlerFactory.get(device);
         deviceHandler.setTimeout(timeout);
-        CommandHandler.reset(deviceHandler);
-        info = new SystemInfoCmd(deviceHandler);
+        init();
     }
 
     /**
@@ -73,8 +72,17 @@ public class YubiHSM  {
      */
     public YubiHSM(String device) throws YubiHSMErrorException {
         deviceHandler = DeviceHandlerFactory.get(device);
-        CommandHandler.reset(deviceHandler);
-        info = new SystemInfoCmd(deviceHandler);
+        init();
+    }
+
+    /**
+     * Constructor that opens /dev/ttyACM0
+     *
+     * @throws YubiHSMErrorException if the YubiHSM reset command fail
+     */
+    public YubiHSM() throws YubiHSMErrorException {
+        deviceHandler = DeviceHandlerFactory.get("/dev/ttyACM0");
+        init();
     }
 
     /**
@@ -572,7 +580,7 @@ public class YubiHSM  {
     }
 
     /**
-     * Get the minimum hash length.
+     * Get the minimum hash length used when generating or validating an AEAD.
      *
      * @return the minimum hash length
      */
@@ -581,10 +589,20 @@ public class YubiHSM  {
     }
 
     /**
-     * Set the minimum hash length.
+     * Set the minimum hash length generating or validating an AEAD.
      * @param value the minimum hash length
      */
     public void setMinHashLength(int value) {
         minHashLength = value;
+    }
+
+    /**
+     * Initialize the HSM, this method is used by the constructors
+     *
+     * @throws YubiHSMErrorException
+     */
+    private void init() throws YubiHSMErrorException {
+        CommandHandler.reset(deviceHandler);
+        info = new SystemInfoCmd(deviceHandler);
     }
 }

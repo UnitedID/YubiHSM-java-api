@@ -12,6 +12,9 @@ to skip tests (tests require a YubiHSM configured in 'debug' mode):
 
     $ mvn -Dmaven.test.skip=true package
 
+To test a HSM with a device name other than '/dev/ttyACM0' do as follows:
+    $ mvn test -DargLine="-Dhsm.test.deviceName=/dev/tty.usbmodem14331"
+
 ## How to configure HSM in debug mode
 The HSM is a serial device, I recommend using screen to connect with the device (ie screen /dev/ttyACM0).
 

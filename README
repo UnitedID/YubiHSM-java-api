@@ -16,6 +16,29 @@ to skip tests (tests require a YubiHSM configured in 'debug' mode):
 
 $ mvn -Dmaven.test.skip=true package
 
+To test a HSM with a device name other than '/dev/ttyACM0' do as follows:
+
+$ mvn test -DargLine="-Dhsm.test.deviceName=/dev/tty.usbmodem14331"
+
+
+How to configure HSM in debug mode
+----------------------------------
+
+The HSM is a serial device, I recommend using screen to connect with the device (ie screen /dev/ttyACM0).
+
+Prepare the HSM as follows:
+
+    zap
+    yes
+    hsm ffffffff
+    <enter>
+    <enter>
+    <enter>
+    yes
+    exit
+    yes
+
+
 
 Usage
 -----
@@ -25,15 +48,14 @@ Build the javadoc to get the API documentation.
 $ mvn javadoc:javadoc
 
 
-Code example
+Code example 1 - Generate a HMACSHA1
 ------------
 
-float timeout = 0.5; // HSM read timeout in seconds (How long to wait for the response from the current command)
 int keyHandle = 12337; // The key to use in the YubiHSM (0x3031)
 String mySecret = "qwerty";
 
-// Instance of YubiHSM
-YubiHSM hsm = new YubiHSM("/dev/ttyACM0", timeout);
+// Instance of YubiHSM that opens the device /dev/ttyACM0
+YubiHSM hsm = new YubiHSM();
 
 // Generate HmacSHA1 for mySecret
 String sha1 = hsm.generateHMACSHA1(mySecret, keyHandle, true, false).get("hash");
@@ -42,7 +64,7 @@ String sha1 = hsm.generateHMACSHA1(mySecret, keyHandle, true, false).get("hash")
 Code example 2 - OATH-HOTP generate OATH-HOTP AEAD and OTP validation
 --------------
 
-// Nonce should stored for later use when validating an OTP
+// Nonce should be stored for later use when validating an OTP
 String randomNonce = "a1a2a3a4a5a6";
 
 // This is the token seed which should be treated as a secret (don't store this)
@@ -61,11 +83,8 @@ int lookAhead = 10;
 // This is the key handle with permission to generate AEAD
 int keyHandle = 8192;
 
-// HSM read timeout
-float timeout = 0.5;
-
-// Instance of YubiHSM
-YubiHSM hsm = new YubiHSM("/dev/ttyACM0", timeout);
+// Instance of YubiHSM that opens the device /dev/ttyACM0
+YubiHSM hsm = new YubiHSM();
 
 // Generate OATH-HOTP AEAD from the token seed, the AEAD can be safely stored in an database along with the nonce
 // This step is only performed once to recieve an AEAD which can be re-used for OTP validation.

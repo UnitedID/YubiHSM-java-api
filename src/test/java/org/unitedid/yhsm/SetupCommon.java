@@ -31,7 +31,11 @@ public class SetupCommon {
 
     @BeforeTest
     public void setUp() throws Exception {
-        hsm = new YubiHSM("/dev/ttyACM0", 1);
+        String deviceName = "/dev/ttyACM0";
+        if (System.getProperty("hsm.test.deviceName") != null) {
+            deviceName = System.getProperty("hsm.test.deviceName");
+        }
+        hsm = new YubiHSM(deviceName);
         deviceHandler = hsm.getRawDevice();
     }
 

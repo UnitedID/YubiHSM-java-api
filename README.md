@@ -16,6 +16,7 @@ to skip tests (tests require a YubiHSM configured in 'debug' mode):
 The HSM is a serial device, I recommend using screen to connect with the device (ie screen /dev/ttyACM0).
 
 Prepare the HSM as follows:
+
     zap
     yes
     hsm ffffffff

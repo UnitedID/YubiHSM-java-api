@@ -42,7 +42,7 @@ Build the javadoc to get the API documentation.
     String mySecret = "qwerty";
 
     // Instance of YubiHSM that opens the device /dev/ttyACM0
-    YubiHSM hsm = new YubiHSM("/dev/ttyACM0", timeout);
+    YubiHSM hsm = new YubiHSM();
 
     // Generate HmacSHA1 for mySecret
     String sha1 = hsm.generateHMACSHA1(mySecret, keyHandle, true, false).get("hash");

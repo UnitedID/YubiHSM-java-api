@@ -22,8 +22,6 @@ import org.testng.annotations.Test;
 import org.unitedid.yhsm.SetupCommon;
 import org.unitedid.yhsm.utility.ModHex;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.testng.Assert.*;
 
 public class KeyStorageUnlockTest extends SetupCommon {

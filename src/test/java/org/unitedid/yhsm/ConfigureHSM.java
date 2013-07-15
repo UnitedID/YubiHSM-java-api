@@ -40,7 +40,7 @@ public class ConfigureHSM extends SetupCommon {
         hsm.drainData();
         System.out.println(runCommand("sysinfo", true));
         if (hsm.getInfo().getMajorVersion() == 0) {
-            System.out.println(runCommand("hsm ffffffff\r\r2f6af1e667456bb94528e7987344515b\ryes", true));
+            System.out.println(runCommand("hsm ffffffff\r\r" + hsmPassPhrase + "\ryes", true));
         } else {
             char esc = 0x1b;
             System.out.println(runCommand("hsm ffffffff\r" + configPassPhrase + "\r" + adminYubikey + "\r\r" + hsmPassPhrase + "\ryes", true));

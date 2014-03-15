@@ -126,6 +126,14 @@ public class DeviceHandler {
         this.timeout = timeout;
     }
 
+    public int getReadBytes() {
+        return readBytes;
+    }
+
+    public int getWrittenBytes() {
+        return writtenBytes;
+    }
+
     public Object clone() throws CloneNotSupportedException
     {
         throw new CloneNotSupportedException();

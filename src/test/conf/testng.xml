@@ -46,4 +46,9 @@
             <class name="org.unitedid.yhsm.utility.UtilsTest" />
         </classes>
     </test>
+    <test name="YubiHSM stats" preserve-order="true">
+        <classes>
+            <class name="org.unitedid.yhsm.TestStats" />
+        </classes>
+    </test>
 </suite>

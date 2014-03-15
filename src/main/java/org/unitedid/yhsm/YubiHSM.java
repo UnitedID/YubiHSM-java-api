@@ -503,9 +503,32 @@ public class YubiHSM  {
      * @throws YubiHSMErrorException error exception
      */
     public int validateOathHOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        return OathHOTPCmd.validateOTP(hsm, keyHandle, nonce, aead, counter, otp, lookAhead);
+        return OATH.validateHOTP(hsm, keyHandle, nonce, aead, counter, otp, lookAhead);
     }
 
+    /**
+     * Validate OATH-TOTP OTP by a token whose seed is available to the YubiHSM through an AEAD.
+     *
+     * @param hsm the current hsm object
+     * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
+     * @param nonce the nonce used to generate the AEAD
+     * @param aead the AEAD based on the token seed
+     * @param otp the token OTP
+     * @param period an integer giving the period between changes of the OTP value in seconds
+     * @param drift drift of the local clock to the client clock, can be used to adjust the time skew without
+     *              changing the size of @backwardDrift and @forwardDrift
+     * @param backwardDrift the number of @period's we allow to backstep
+     * @param forwardDrift the number of @period's we allow to look ahead
+     * @return return boolean, true if the OTP validated, false if the OTP validation failed
+     * @throws YubiHSMInputException argument exceptions
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     */
+    public boolean validateOathTOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, String otp, int period,
+                                int drift, int backwardDrift, int forwardDrift)
+            throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        return OATH.validateTOTP(hsm, keyHandle, nonce, aead, otp, period, drift, backwardDrift, forwardDrift);
+    }
 
     /**
      * Get a nonce from the YubiHSM. Increment the nonce by the number supplied as increment.

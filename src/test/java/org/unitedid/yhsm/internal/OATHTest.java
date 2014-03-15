@@ -30,7 +30,7 @@ import static org.testng.Assert.assertTrue;
 import static org.unitedid.yhsm.internal.Defines.YSM_TEMP_KEY_HANDLE;
 
 
-public class OathHOTPCmdTest extends SetupCommon {
+public class OATHTest extends SetupCommon {
 
     private String nonce = "f1f2f3f4f5f6";
     private String aead;
@@ -69,7 +69,7 @@ public class OathHOTPCmdTest extends SetupCommon {
         for (OathHotpValueMap o : testValueList) {
             String hmac = hsm.generateHMACSHA1(Utils.longToByteArray(o.getCounter()), YSM_TEMP_KEY_HANDLE, true, false).get("hash");
             assertEquals(hmac, o.getHmac());
-            assertEquals(OathHOTPCmd.truncate(hmac, 6), o.getOtp());
+            assertEquals(OATH.truncate(hmac, 6), o.getOtp());
         }
     }
 
@@ -100,7 +100,7 @@ public class OathHOTPCmdTest extends SetupCommon {
 
     @Test(expectedExceptions = YubiHSMInputException.class)
     public void testOathHotpTruncateHMACLength() throws YubiHSMInputException {
-        OathHOTPCmd.truncate("cccccccccccccccccccccccccccccccccccccccccc", 6);
+        OATH.truncate("cccccccccccccccccccccccccccccccccccccccccc", 6);
     }
 }
 

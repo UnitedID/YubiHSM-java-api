@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2013 United ID.
+  ~ Copyright (c) 2013-2014 United ID.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
             <class name="org.unitedid.yhsm.internal.HMACCmdTest" />
             <class name="org.unitedid.yhsm.internal.SystemInfoCmdTest" />
             <class name="org.unitedid.yhsm.internal.LoadTemporaryKeyCmdTest" />
-            <class name="org.unitedid.yhsm.internal.OathHOTPCmdTest" />
+            <class name="org.unitedid.yhsm.internal.OATHTest" />
             <class name="org.unitedid.yhsm.internal.NonceGetCmdTest" />
             <class name="org.unitedid.yhsm.internal.RandomCmdTest" />
             <class name="org.unitedid.yhsm.internal.RandomReseedCmdTest" />
@@ -41,6 +41,7 @@
     </test>
     <test name="YubiHSM Utility" preserve-order="true">
         <classes>
+            <class name="org.unitedid.yhsm.utility.IntRangeTest" />
             <class name="org.unitedid.yhsm.utility.ModHexTest" />
             <class name="org.unitedid.yhsm.utility.UtilsTest" />
         </classes>

@@ -38,7 +38,9 @@ Build the javadoc to get the API documentation.
     $ mvn javadoc:javadoc
 
 ### How to unlock the key storage from the command line.
+
 First build the package as described in "How to build", then run:
+
     $ java -jar target/YubiHSM-<version>-jar-with-dependencies.jar -h
 
 ## Code examples

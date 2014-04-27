@@ -30,6 +30,7 @@ import org.unitedid.yhsm.internal.*;
 
 import java.util.Map;
 
+import static org.unitedid.yhsm.internal.Defines.*;
 import static org.unitedid.yhsm.utility.Utils.*;
 
 /**
@@ -283,6 +284,31 @@ public class YubiHSM  {
      */
     public boolean loadTemporaryKey(String nonce, int keyHandle, String aead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
         return LoadTemporaryKeyCmd.execute(deviceHandler, nonce, keyHandle, aead);
+    }
+
+    /**
+     * Generate HMAC SHA1 using a key handle in the YubiHSM.
+     *
+     * @param bytes the data used to generate the SHA1
+     * @param keyHandle the key handle to use in the YubiHSM
+     * @param toBuffer set to true to get the SHA1 stored into the internal buffer, for use in some other cryptographic operations.
+     * @return a map containing status and SHA1 hash
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public byte[] generateHMACSHA1(byte[] bytes, int keyHandle, boolean toBuffer) throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        byte[] result = {};
+        byte flags = YSM_HMAC_SHA1_RESET;
+        if (toBuffer)
+            flags |= YSM_HMAC_SHA1_TO_BUFFER;
+        for (int b = 0; b < bytes.length; b = b + YSM_DATA_BUF_SIZE) {
+            if ((bytes.length - b) <= YSM_DATA_BUF_SIZE)
+                flags |= YSM_HMAC_SHA1_FINAL;
+            result = HMACCmd.execHMACSHA1_Raw(deviceHandler, rangeOfByteArray(bytes, b, Math.min(bytes.length - b, YSM_DATA_BUF_SIZE)), keyHandle, flags);
+            flags &= (byte)0xFE; // remove YSM_HMAC_SHA1_RESET flag
+        }
+        return result;
     }
 
     /**

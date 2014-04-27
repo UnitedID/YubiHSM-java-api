@@ -58,8 +58,28 @@ import static org.unitedid.yhsm.utility.Utils.*;
         byte[] flagsBA = { flags };
         byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), flagsBA, addLengthToData(dataBA));
         byte[] result = CommandHandler.execute(deviceHandler, YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
-
         return parseResult(result, keyHandle, last);
+    }
+
+    /**
+     * Generate HMAC SHA1 using a key handle in the YubiHSM.
+     *
+     * @param deviceHandler the device handler
+     * @param data the data used to generate the SHA1
+     * @param keyHandle the key handle to use in the YubiHSM
+     * @param flags the commands flags, send (byte) 0 to use defaults
+     * @return an array of bytes
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    public static byte[] execHMACSHA1_Raw(DeviceHandler deviceHandler, byte[] data, int keyHandle, byte flags) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        byte [] dataBA = validateByteArray("data", data, YSM_DATA_BUF_SIZE, 0, 0);
+        byte[] flagsBA = { flags };
+        byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), flagsBA, addLengthToData(dataBA));
+        byte[] result = CommandHandler.execute(deviceHandler, YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
+        boolean isLast = (flags & YSM_HMAC_SHA1_FINAL) == YSM_HMAC_SHA1_FINAL;
+        return parseResultRaw(result, keyHandle, isLast);
     }
 
     /**
@@ -89,10 +109,8 @@ import static org.unitedid.yhsm.utility.Utils.*;
         byte[] flagsBA = { flags };
         byte[] cmdBuffer = concatAllArrays(leIntToBA(keyHandle), flagsBA, addLengthToData(data));
         byte[] result = CommandHandler.execute(deviceHandler, YSM_HMAC_SHA1_GENERATE, cmdBuffer, true);
-
         return parseResult(result, keyHandle, last);
     }
-
 
     /**
      * Parse the response from the YubiHSM for a previous command.
@@ -123,5 +141,31 @@ import static org.unitedid.yhsm.utility.Utils.*;
         }
 
         return result;
+    }
+
+    /**
+     * Parse the response from the YubiHSM for a previous command.
+     *
+     * @param data the data from the YubiHSM
+     * @param keyHandle the key handle used for the command
+     * @param last the boolean if this was the final request
+     * @return array of bytes
+     * @throws YubiHSMCommandFailedException if the YubiHSM fail to execute the command
+     * @throws YubiHSMErrorException if validation fail for some values returned by the YubiHSM
+     * @throws YubiHSMInputException if an argument does not validate
+     */
+    private static byte[] parseResultRaw(byte[] data, int keyHandle, boolean last) throws YubiHSMErrorException, YubiHSMCommandFailedException, YubiHSMInputException {
+        if (data[4] == YSM_STATUS_OK) {
+            validateCmdResponseBA("keyHandle", rangeOfByteArray(data, 0, 4), leIntToBA(keyHandle));
+            if (last) {
+                return rangeOfByteArray(data, 6, data[5]);
+            } else {
+                byte[] zeroHash = { 0x00 };
+                zeroHash = validateByteArray("zeroHash", zeroHash, 0, 0, 20);
+                return zeroHash;
+            }
+        } else {
+            throw new YubiHSMCommandFailedException("Command " + getCommandString(YSM_HMAC_SHA1_GENERATE) + " failed: " + getCommandStatus(data[4]));
+        }
     }
 }

@@ -514,7 +514,7 @@ public class YubiHSM  {
     }
 
     /**
-     * Validate OATH-HOTP OTP by a token whose seed is available to the YubiHSM through an AEAD.
+     * Validate OATH-HOTP by a token whose seed is available to the YubiHSM through an AEAD.
      *
      * @param hsm the current hsm object
      * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
@@ -533,7 +533,7 @@ public class YubiHSM  {
     }
 
     /**
-     * Validate OATH-TOTP OTP by a token whose seed is available to the YubiHSM through an AEAD.
+     * Validate OATH-TOTP by a token whose seed is available to the YubiHSM through an AEAD.
      *
      * @param hsm the current hsm object
      * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
@@ -554,6 +554,11 @@ public class YubiHSM  {
                                 int drift, int backwardDrift, int forwardDrift)
             throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
         return OATH.validateTOTP(hsm, keyHandle, nonce, aead, otp, period, drift, backwardDrift, forwardDrift);
+    }
+
+    public boolean validateOathTOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, String otp)
+        throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
+        return OATH.validateTOTP(hsm, keyHandle, nonce, aead, otp, 30, 0, 1, 1);
     }
 
     /**

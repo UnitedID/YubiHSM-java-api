@@ -42,11 +42,11 @@ public class OATHTest extends SetupCommon {
         super.setUp();
 
         String seed = "3132333435363738393031323334353637383930";
-        aead = hsm.generateOathHotpAEAD(nonce, keyHandle, seed);
+        aead = hsm.generateOathAEAD(nonce, keyHandle, seed);
         assertTrue(hsm.loadTemporaryKey(nonce, keyHandle, aead));
 
         seed = "3132333435363738393031323334353637383931";
-        aead2 = hsm.generateOathHotpAEAD(nonce, keyHandle, seed);
+        aead2 = hsm.generateOathAEAD(nonce, keyHandle, seed);
         assertTrue(hsm.loadTemporaryKey(nonce, keyHandle, aead2));
     }
 
@@ -83,7 +83,7 @@ public class OATHTest extends SetupCommon {
         testCodeList.add(new OathHotpCodeMap(31, 30, "026920", 1));
 
         for (OathHotpCodeMap o : testCodeList) {
-            assertEquals(hsm.validateOathHOTP(hsm, keyHandle, nonce, aead, o.getCounter(), o.getOtp(), o.getLookAhead()), o.getExpectedCounter());
+            assertEquals(hsm.validateOathHOTP(keyHandle, nonce, aead, o.getCounter(), o.getOtp(), o.getLookAhead()), o.getExpectedCounter());
         }
 
         testCodeList.clear();
@@ -94,7 +94,7 @@ public class OATHTest extends SetupCommon {
         testCodeList.add(new OathHotpCodeMap(31, 30, "479886", 1));
 
         for (OathHotpCodeMap o : testCodeList) {
-            assertEquals(hsm.validateOathHOTP(hsm, keyHandle, nonce, aead2, o.getCounter(), o.getOtp(), o.getLookAhead()), o.getExpectedCounter());
+            assertEquals(hsm.validateOathHOTP(keyHandle, nonce, aead2, o.getCounter(), o.getOtp(), o.getLookAhead()), o.getExpectedCounter());
         }
     }
 

@@ -24,9 +24,9 @@ public class SetupCommon {
     public YubiHSM hsm;
     public DeviceHandler deviceHandler;
     public int keyHandle = 8192;
-    public String configPassPhrase = "";
-    public String hsmPassPhrase = "badabada";
-    public String adminYubikey = "ftftftfteeee";
+    public final String configPassPhrase = "";
+    public final String hsmPassPhrase = "badabada";
+    public final String adminYubikey = "ftftftfteeee";
 
 
     @BeforeTest

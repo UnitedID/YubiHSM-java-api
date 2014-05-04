@@ -171,17 +171,18 @@ public class YubiHSM  {
     }
 
     /**
-     * Generate AEAD block which can be used for OATH-HOTP OTP validation, see <code>validateOathHOTP</code>.
+     * Generate AEAD block which can be used for OATH OTP validation, see <code>validateOathHOTP</code> and
+     * <code>validateOathTOTP</code>.
      *
      * @param nonce the nonce
      * @param keyHandle the key handle with permission to generateBufferAEAD
-     * @param tokenSeed the OATH HOTP token seed
+     * @param tokenSeed the OATH token seed
      * @return returns an AEAD
      * @throws YubiHSMInputException thrown if an argument fail to validate
      * @throws YubiHSMErrorException thrown if an error have occurred
      * @throws YubiHSMCommandFailedException thrown if the YubiHSM fail to execute a command
      */
-    public String generateOathHotpAEAD(String nonce, int keyHandle, String tokenSeed) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
+    public String generateOathAEAD(String nonce, int keyHandle, String tokenSeed) throws YubiHSMInputException, YubiHSMErrorException, YubiHSMCommandFailedException {
         if (tokenSeed.length() != 40)
             throw new YubiHSMInputException("Seed is not of required length, got " + tokenSeed.length() + " but expected 40");
 
@@ -516,7 +517,6 @@ public class YubiHSM  {
     /**
      * Validate OATH-HOTP by a token whose seed is available to the YubiHSM through an AEAD.
      *
-     * @param hsm the current hsm object
      * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
      * @param nonce the nonce used to generate the AEAD
      * @param aead the AEAD based on the token seed
@@ -528,14 +528,14 @@ public class YubiHSM  {
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    public int validateOathHOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead) throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
-        return OATH.validateHOTP(hsm, keyHandle, nonce, aead, counter, otp, lookAhead);
+    public int validateOathHOTP(int keyHandle, String nonce, String aead, int counter, String otp, int lookAhead)
+            throws YubiHSMCommandFailedException, YubiHSMErrorException, YubiHSMInputException {
+        return OATH.validateHOTP(this, keyHandle, nonce, aead, counter, otp, lookAhead);
     }
 
     /**
      * Validate OATH-TOTP by a token whose seed is available to the YubiHSM through an AEAD.
      *
-     * @param hsm the current hsm object
      * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
      * @param nonce the nonce used to generate the AEAD
      * @param aead the AEAD based on the token seed
@@ -550,15 +550,28 @@ public class YubiHSM  {
      * @throws YubiHSMCommandFailedException command failed exception
      * @throws YubiHSMErrorException error exception
      */
-    public boolean validateOathTOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, String otp, int period,
+    public boolean validateOathTOTP(int keyHandle, String nonce, String aead, String otp, int period,
                                 int drift, int backwardDrift, int forwardDrift)
             throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        return OATH.validateTOTP(hsm, keyHandle, nonce, aead, otp, period, drift, backwardDrift, forwardDrift);
+        return OATH.validateTOTP(this, keyHandle, nonce, aead, otp, period, drift, backwardDrift, forwardDrift);
     }
 
-    public boolean validateOathTOTP(YubiHSM hsm, int keyHandle, String nonce, String aead, String otp)
+    /**
+     * Validate OATH-TOTP by a token whose seed is available to the YubiHSM through an AEAD. This method sets the
+     * following defaults: period = 30 seconds, drift = 0, backwardDrift = 1 and forwardDrift = 1.
+     *
+     * @param keyHandle a keyHandle with the permission YSM_TEMP_KEY_LOAD enabled
+     * @param nonce the nonce used to generate the AEAD
+     * @param aead the AEAD based on the token seed
+     * @param otp the token OTP
+     * @return return boolean, true if the OTP validated, false if the OTP validation failed
+     * @throws YubiHSMInputException argument exceptions
+     * @throws YubiHSMCommandFailedException command failed exception
+     * @throws YubiHSMErrorException error exception
+     */
+    public boolean validateOathTOTP(int keyHandle, String nonce, String aead, String otp)
         throws YubiHSMInputException, YubiHSMCommandFailedException, YubiHSMErrorException {
-        return OATH.validateTOTP(hsm, keyHandle, nonce, aead, otp, 30, 0, 1, 1);
+        return validateOathTOTP(keyHandle, nonce, aead, otp, 30, 0, 1, 1);
     }
 
     /**

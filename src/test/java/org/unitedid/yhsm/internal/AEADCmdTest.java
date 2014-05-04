@@ -95,7 +95,7 @@ public class AEADCmdTest extends SetupCommon {
         String nonce = "f1f2f3f4f5f6";
         String seed = "3132333435363738393031323334353637383930";
         String expected = "ab9ee1ea245fd11bdfe3fc8a5255de4e8d90b3f6f1f7c97692e0979599de95c5";
-        String result = hsm.generateOathHotpAEAD(nonce, 8192, seed);
+        String result = hsm.generateOathAEAD(nonce, 8192, seed);
 
         assertEquals(result, expected);
     }

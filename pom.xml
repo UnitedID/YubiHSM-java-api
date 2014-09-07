@@ -75,10 +75,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>gnu.io</groupId>
-            <artifactId>RXTXcomm</artifactId>
-            <version>2.2pre2</version>
-            <scope>provided</scope>
+            <groupId>org.scream3r</groupId>
+            <artifactId>jssc</artifactId>
+            <version>2.8.0</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>

@@ -93,6 +93,7 @@ public class CommandHandler {
     }
 
     public static void reset(DeviceHandler device) throws YubiHSMErrorException {
+        log.debug("Sending reset command to device {}", device.getPortName());
         byte[] reset = new byte[YSM_MAX_PKT_SIZE - 1];
         for (int i=0; i < YSM_MAX_PKT_SIZE - 1; i++) {
             reset[i] = 0x00;

@@ -126,6 +126,10 @@ public class DeviceHandler {
         return writtenBytes;
     }
 
+    public String getPortName() {
+        return device.getPortName();
+    }
+
     public Object clone() throws CloneNotSupportedException
     {
         throw new CloneNotSupportedException();

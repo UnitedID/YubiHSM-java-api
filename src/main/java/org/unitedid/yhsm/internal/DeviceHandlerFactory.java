@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class DeviceHandlerFactory {
     /** Logger */
-    private final Logger log = LoggerFactory.getLogger(DeviceHandlerFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(DeviceHandlerFactory.class);
 
     private static Map<String, DeviceHandler> deviceHandlerFactoryMap = new HashMap<String, DeviceHandler>();
 
@@ -34,8 +34,11 @@ public class DeviceHandlerFactory {
         synchronized (deviceHandlerFactoryMap) {
             DeviceHandler deviceHandler = deviceHandlerFactoryMap.get(device);
             if (deviceHandler == null) {
+                log.debug("Adding device {} to deviceHandlerFactory.", device);
                 deviceHandler = new DeviceHandler(device);
                 deviceHandlerFactoryMap.put(device, deviceHandler);
+            } else {
+                log.debug("Returning device {} from deviceHandlerFactory.", device);
             }
             return deviceHandler;
         }

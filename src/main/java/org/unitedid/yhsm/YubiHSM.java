@@ -36,8 +36,6 @@ import static org.unitedid.yhsm.utility.Utils.*;
 /**
  * <code>YubiHSM</code> the main class to use for YubiHSM commands
  *
- * @author Stefan Wold <stefan.wold@unitedid.org>
- * @author Fredrik Thulin <fredrik@yubico.com>
  */
 public class YubiHSM  {
     /** Logger */

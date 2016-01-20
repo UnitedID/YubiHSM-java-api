@@ -23,10 +23,6 @@ import static org.unitedid.yhsm.internal.Defines.*;
 import static org.unitedid.yhsm.utility.Utils.hexToByteArray;
 import static org.unitedid.yhsm.utility.Utils.validateByteArray;
 
-/**
- * @author Stefan Wold <stefan.wold@unitedid.org>
- * @author Fredrik Thulin <fredrik@yubico.com>
- */
 public class HsmUnlockCmd {
 
     /** Constructor */

@@ -27,7 +27,6 @@ import static org.unitedid.yhsm.utility.Utils.*;
 
 /**
  * <code>AEADCmd</code> implements AEAD commands for the YubiHSM
- * @author Stefan Wold <stefan.wold@unitedid.org>
  */
 public class AEADCmd {
 

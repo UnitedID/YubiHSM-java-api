@@ -27,9 +27,6 @@ import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
 
-/**
- * @author Fredrik Thulin <fredrik@yubico.com>
- */
 public class YubikeyOtpDecodeCmdTest extends SetupCommon {
 
     private final int keyHandle = 0x2000;

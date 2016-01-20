@@ -22,9 +22,6 @@ import static org.unitedid.yhsm.utility.Utils.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Fredrik Thulin <fredrik@yubico.com>
- */
 public class YubikeyOtpDecodeCmd {
 
     /** Constructor */

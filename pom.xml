@@ -51,6 +51,8 @@
     </developers>
 
     <scm>
+        <url>https://github.com/UnitedID/YubiHSM-java-api</url>
+        <connection>scm:git:git@github.com/UnitedID/YubiHSM-java-api.git</connection>
         <developerConnection>scm:git:git@github.com/UnitedID/YubiHSM-java-api.git</developerConnection>
     </scm>
 
